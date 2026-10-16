@@ -4,12 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tonoy Ghose Niloy | 3D Prop & Hard-Surface Artist</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Three.js Core + GLTFLoader for Real .GLB / .GLTF Prop Inspection -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <!-- Google Fonts: Syne, Inter, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -29,7 +24,6 @@
     .font-display { font-family: 'Syne', sans-serif; }
     .font-mono-tech { font-family: 'JetBrains Mono', monospace; }
 
-    /* Subtle CRT/Grid Overlay */
     .bg-grid {
       background-size: 48px 48px;
       background-image: 
@@ -37,13 +31,11 @@
         linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     }
 
-    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #050505; }
     ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #ccff00; }
 
-    /* Horizontal Drag Slider */
     .drag-slider {
       cursor: grab;
       user-select: none;
@@ -53,7 +45,6 @@
     .drag-slider::-webkit-scrollbar { display: none; }
     .drag-slider.active { cursor: grabbing; }
 
-    /* Glitch & HUD Corner Accents */
     .hud-box {
       position: relative;
       border: 1px solid rgba(255,255,255,0.12);
@@ -65,7 +56,6 @@
       height: 8px;
       border-color: #ccff00;
       pointer-events: none;
-      z-index: 20;
     }
     .hud-box::before {
       top: -1px; left: -1px;
@@ -90,104 +80,38 @@
 </head>
 <body class="bg-grid antialiased selection:bg-[#ccff00] selection:text-black">
 
-  <!-- SYSTEM TOAST NOTIFICATION -->
-  <div id="sys-toast" class="fixed bottom-6 right-6 z-[80] transform translate-y-28 opacity-0 transition-all duration-300 pointer-events-none bg-[#0c0c0e] border border-[#ccff00] px-5 py-3.5 shadow-2xl font-mono-tech text-xs">
-    <div class="flex items-center gap-3">
-      <span class="w-2.5 h-2.5 bg-[#ccff00] inline-block"></span>
-      <div>
-        <p id="sys-toast-title" class="text-[#ccff00] font-bold uppercase">SYSTEM UPDATED</p>
-        <p id="sys-toast-msg" class="text-neutral-300 mt-0.5">Configuration synced to browser storage.</p>
-      </div>
-    </div>
-  </div>
-
   <!-- TOP FLOATING NAVBAR -->
-  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-black/75 border-b border-white/10">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-4">
-      <a href="#home" class="flex items-center gap-3 group shrink-0">
-        <div class="w-10 h-10 bg-[#ccff00] text-black font-display font-extrabold text-lg flex items-center justify-center tracking-tighter group-hover:rotate-12 transition-transform rounded-sm">
-          TGN
+  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-black/80 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 bg-[#ccff00] text-black font-display font-extrabold text-lg flex items-center justify-center tracking-tighter group-hover:rotate-12 transition-transform">
+          T
         </div>
         <div class="hidden sm:block">
           <p class="font-mono-tech text-xs tracking-widest text-white">TONOY GHOSE NILOY</p>
-          <p class="font-mono-tech text-[10px] text-neutral-400">SYS.VER // 2026.5</p>
+          <p class="font-mono-tech text-[10px] text-neutral-400">SYS.VER // 2026.4 [SHOWREEL READY]</p>
         </div>
       </a>
 
-      <nav class="hidden lg:flex items-center gap-8 font-mono-tech text-xs uppercase tracking-[0.2em]">
+      <nav class="hidden md:flex items-center gap-10 font-mono-tech text-xs uppercase tracking-[0.2em]">
         <a href="#home" class="text-neutral-300 hover:text-[#ccff00] transition">Home</a>
+        <a href="#showreel" class="text-neutral-300 hover:text-[#ccff00] transition">Showreel</a>
         <a href="#work" class="text-neutral-300 hover:text-[#ccff00] transition">Work</a>
         <a href="#spotlight" class="text-neutral-300 hover:text-[#ccff00] transition">TGN_Spotlight</a>
         <a href="#profile" class="text-neutral-300 hover:text-[#ccff00] transition">Profile</a>
         <a href="#contact" class="text-neutral-300 hover:text-[#ccff00] transition">Contact</a>
       </nav>
 
-      <div class="flex items-center gap-3">
-        <!-- Live Asset & Embed Manager Trigger -->
-        <button onclick="toggleAssetDrawer(true)" class="px-3.5 py-2 bg-white/5 border border-white/20 text-white hover:border-[#ccff00] hover:text-[#ccff00] font-mono-tech text-xs uppercase tracking-wider transition flex items-center gap-2 rounded-sm">
-          <span class="w-2 h-2 rounded-full bg-[#ccff00] animate-pulse"></span>
-          <span>⚙ Asset Manager (Live Edit)</span>
-        </button>
-
-        <a href="https://www.artstation.com/tonoy8663" target="_blank" rel="noopener" class="hidden sm:inline-block px-4 py-2 border border-[#ccff00]/60 text-[#ccff00] font-mono-tech text-xs uppercase tracking-widest hover:bg-[#ccff00] hover:text-black transition rounded-sm">
-          ArtStation ↗
-        </a>
-      </div>
+      <a href="https://www.artstation.com/tonoy8663" target="_blank" rel="noopener" class="px-4 py-2 border border-[#ccff00]/60 text-[#ccff00] font-mono-tech text-xs uppercase tracking-widest hover:bg-[#ccff00] hover:text-black transition">
+        ArtStation ↗
+      </a>
     </div>
   </header>
 
-  <!-- LIVE ASSET & EMBED CUSTOMIZER DRAWER (SLIDE-OVER) -->
-  <div id="asset-drawer-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden" onclick="toggleAssetDrawer(false)"></div>
-  <aside id="asset-drawer" class="fixed top-0 right-0 h-full w-full max-w-2xl bg-[#09090b] border-l border-[#ccff00]/50 z-[70] transform translate-x-full transition-transform duration-300 flex flex-col">
-    <!-- Drawer Header -->
-    <div class="p-6 border-b border-white/15 flex items-center justify-between bg-[#0c0c0e]">
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 bg-[#ccff00] text-black font-mono-tech text-[10px] font-bold uppercase rounded-sm">LIVE CMS</span>
-          <span class="font-mono-tech text-xs text-neutral-400">ARTSTATION &amp; SKETCHFAB CONFIGURATOR</span>
-        </div>
-        <h3 class="font-display text-xl font-bold uppercase text-white mt-1">Replace Thumbnails &amp; 3D Embeds</h3>
-      </div>
-      <button onclick="toggleAssetDrawer(false)" class="px-3 py-1.5 border border-white/20 font-mono-tech text-xs text-neutral-300 hover:border-[#ccff00] hover:text-[#ccff00] rounded-sm">
-        ESC // CLOSE ✕
-      </button>
-    </div>
-
-    <!-- How to grab ArtStation / Sketchfab Links Quick Guide -->
-    <div class="px-6 py-3.5 bg-black border-b border-white/10 font-mono-tech text-[11px] text-neutral-300 space-y-1">
-      <p class="text-[#ccff00] font-bold">💡 HOW TO LINK YOUR REAL ASSETS IN 10 SECONDS:</p>
-      <p>1. <strong class="text-white">ArtStation Thumbnail:</strong> Open any project on <a href="https://www.artstation.com/tonoy8663" target="_blank" class="underline text-[#ccff00]">artstation.com/tonoy8663</a> → Right-click your render → <em>"Copy Image Address"</em> (`https://cdna.artstation.com/...`) and paste below.</p>
-      <p>2. <strong class="text-white">Sketchfab 3D Embed:</strong> Paste any Sketchfab Model URL (e.g. `https://sketchfab.com/3d-models/your-prop-abc12345`) or 32-character Model UID.</p>
-      <p>3. <strong class="text-white">Local .GLB File:</strong> Or drag &amp; drop a `.glb` file directly onto the `TGN_SPOTLIGHT` 3D viewport!</p>
-    </div>
-
-    <!-- Drawer Scrollable Form Body -->
-    <div class="p-6 overflow-y-auto flex-1 space-y-8" id="drawer-form-container">
-      <!-- Dynamically populated from PORTFOLIO_CONFIG -->
-    </div>
-
-    <!-- Drawer Footer Actions -->
-    <div class="p-5 border-t border-white/15 bg-[#0c0c0e] flex flex-wrap items-center justify-between gap-3 font-mono-tech text-xs">
-      <div class="flex items-center gap-2">
-        <button onclick="resetConfigToDefaults()" class="px-3.5 py-2.5 border border-rose-500/50 text-rose-400 hover:bg-rose-500/10 transition rounded-sm">
-          Reset Defaults
-        </button>
-        <button onclick="exportConfigCode()" class="px-3.5 py-2.5 border border-white/20 text-white hover:border-[#ccff00] hover:text-[#ccff00] transition rounded-sm">
-          📋 Copy Updated JS Config
-        </button>
-      </div>
-      <button onclick="saveCustomConfig()" class="px-6 py-2.5 bg-[#ccff00] text-black font-bold uppercase tracking-wider hover:bg-white transition rounded-sm">
-        Save &amp; Apply Changes ✓
-      </button>
-    </div>
-  </aside>
-
   <!-- HERO SECTION -->
   <section id="home" class="relative min-h-screen flex flex-col justify-between pt-28 pb-10 px-6 overflow-hidden border-b border-white/10">
-    <!-- Background Decorative Radial -->
     <div class="pointer-events-none absolute -top-40 right-1/4 w-[550px] h-[550px] rounded-full bg-[#ccff00]/10 blur-[150px]"></div>
 
-    <!-- Top Telemetry Bar -->
     <div class="max-w-7xl mx-auto w-full flex flex-wrap items-center justify-between gap-4 font-mono-tech text-xs text-neutral-400 border-b border-white/10 pb-4">
       <div class="flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-[#ccff00] animate-ping"></span>
@@ -199,7 +123,6 @@
       </div>
     </div>
 
-    <!-- Center Giant Kinetic Typography -->
     <div class="max-w-7xl mx-auto w-full my-auto py-16">
       <p class="font-mono-tech text-xs md:text-sm uppercase tracking-[0.35em] text-[#ccff00] mb-4">
         // 3D GENERALIST &amp; HARD-SURFACE PROP ARTIST
@@ -214,203 +137,165 @@
           Crafting production-ready low-poly game props, hero weapons, and modular environments with clean topology, crisp normal bakes, and physically accurate PBR textures.
         </p>
         <div class="md:col-span-6 flex flex-wrap md:justify-end gap-4">
-          <a href="#spotlight" class="px-7 py-4 bg-[#ccff00] text-black font-mono-tech text-xs font-bold uppercase tracking-widest hover:bg-white transition rounded-sm">
-            Launch 3D Spotlight →
+          <a href="#showreel" class="px-7 py-4 bg-[#ccff00] text-black font-mono-tech text-xs font-bold uppercase tracking-widest hover:bg-white transition">
+            Watch Showreel ▶
           </a>
-          <button onclick="toggleAssetDrawer(true)" class="px-7 py-4 border border-white/20 text-white font-mono-tech text-xs uppercase tracking-widest hover:border-[#ccff00] hover:text-[#ccff00] transition rounded-sm">
-            ⚙ Link ArtStation &amp; Sketchfab
-          </button>
+          <a href="#work" class="px-7 py-4 border border-white/20 text-white font-mono-tech text-xs uppercase tracking-widest hover:border-[#ccff00] hover:text-[#ccff00] transition">
+            Explore Selected Work
+          </a>
         </div>
       </div>
     </div>
 
-    <!-- Bottom Scroll Cue -->
     <div class="max-w-7xl mx-auto w-full flex items-center justify-between font-mono-tech text-xs text-neutral-400 pt-4 border-t border-white/10">
       <span>SCROLL TO INITIALIZE</span>
       <span class="animate-bounce text-[#ccff00]">↓</span>
-      <span>[01 // 06]</span>
+      <span>[SECURE PORTFOLIO]</span>
     </div>
   </section>
 
-  <!-- SELECTED WORK (4 QUAD SHOWCASE - DYNAMICALLY RENDERED FROM PORTFOLIO_CONFIG) -->
+  <!-- YOUTUBE SHOWREEL SECTION -->
+  <section id="showreel" class="py-24 px-6 border-b border-white/10 bg-black/40">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div>
+          <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-2">// CINEMATIC_SHOWREEL</p>
+          <h2 class="font-display text-4xl sm:text-6xl font-extrabold uppercase tracking-tight">
+            3D Prop <span class="text-neutral-500">Showreel</span>
+          </h2>
+        </div>
+        <p class="font-mono-tech text-xs text-neutral-400 max-w-sm">
+          A high-impact montage of hard-surface models, real-time lighting bakes, and game prop assembly lines.
+        </p>
+      </div>
+
+      <!-- Responsive YouTube HUD Container -->
+      <div class="hud-box bg-[#0c0c0e] p-3 sm:p-5">
+        <div class="flex items-center justify-between font-mono-tech text-xs text-neutral-400 mb-4 px-2">
+          <span class="text-[#ccff00]">STREAM SOURCE: YOUTUBE 1080P/4K 60FPS</span>
+          <span>AUDIO: ENABLED</span>
+        </div>
+        <div class="relative w-full aspect-video bg-neutral-900 overflow-hidden">
+          <!-- REPLACE "dQw4w9WgXcQ" WITH YOUR ACTUAL YOUTUBE VIDEO ID -->
+          <iframe 
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&rel=0&modestbranding=1" 
+            title="Tonoy Ghose Niloy - 3D Showreel" 
+            class="absolute inset-0 w-full h-full border-0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK (UNLIMITED DYNAMIC PORTFOLIO GRID) -->
   <section id="work" class="py-24 px-6 border-b border-white/10">
     <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
         <div>
           <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-2">// ARCHIVE_01</p>
           <h2 class="font-display text-4xl sm:text-6xl font-extrabold uppercase tracking-tight">
             Selected <span class="text-neutral-500">Work</span>
           </h2>
         </div>
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-          <p class="font-mono-tech text-xs text-neutral-400 max-w-xs">
-            Connected to <span class="text-white">PORTFOLIO_CONFIG</span>. Click any card to load its 3D target or view on ArtStation.
-          </p>
-          <button onclick="toggleAssetDrawer(true)" class="px-4 py-2.5 border border-[#ccff00]/50 text-[#ccff00] font-mono-tech text-xs uppercase hover:bg-[#ccff00] hover:text-black transition shrink-0 rounded-sm">
-            + Edit Project Links
-          </button>
+        <div class="flex flex-wrap items-center gap-3 font-mono-tech text-xs">
+          <input type="text" id="work-search" oninput="filterProjects()" placeholder="Search assets..." class="bg-black border border-white/20 px-3 py-2 text-white focus:outline-none focus:border-[#ccff00]" />
+          <button onclick="setLayoutDensity(2)" id="density-2" class="px-3 py-2 border border-white/20 bg-[#ccff00] text-black font-bold">2-COL</button>
+          <button onclick="setLayoutDensity(3)" id="density-3" class="px-3 py-2 border border-white/20 text-neutral-400 hover:text-white">3-COL</button>
         </div>
       </div>
 
-      <!-- 4 Main Feature Cards Container -->
-      <div id="selected-work-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Populated dynamically by renderSelectedWork() -->
+      <div id="category-filters" class="flex flex-wrap gap-2 mb-12 font-mono-tech text-xs">
+        <button onclick="filterCategory('ALL')" class="cat-btn px-4 py-2 border border-[#ccff00] bg-[#ccff00]/15 text-white">ALL [10]</button>
+        <button onclick="filterCategory('WEAPONS')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">WEAPONS &amp; PROPS</button>
+        <button onclick="filterCategory('ENVIRONMENTS')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">ENVIRONMENTS &amp; VEHICLES</button>
+        <button onclick="filterCategory('ARCHVIZ')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">ARCHVIZ &amp; BOOTH</button>
+        <button onclick="filterCategory('PACKAGING')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">PACKAGING &amp; PRODUCT</button>
+        <button onclick="filterCategory('FILM')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">SHORT FILM &amp; MECHA</button>
       </div>
+
+      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
     </div>
   </section>
 
-  <!-- TGN_SPOTLIGHT (HYBRID 3D VIEWPORT: SKETCHFAB EMBED + LOCAL .GLB LOADER + PROCEDURAL 3D) -->
+  <!-- TGN_SPOTLIGHT (SKETCHFAB EMBED VIEWPORT) -->
   <section id="spotlight" class="py-24 px-6 border-b border-white/10 relative">
     <div class="max-w-7xl mx-auto">
-      <!-- Spotlight Header -->
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
           <div class="flex items-center gap-3">
-            <span class="px-2.5 py-1 bg-[#ccff00] text-black font-mono-tech text-xs font-bold rounded-sm">TGN_SPOTLIGHT</span>
-            <span class="font-mono-tech text-xs text-neutral-400">MULTI-ENGINE 3D INSPECTOR // ONLINE</span>
+            <span class="px-2.5 py-1 bg-[#ccff00] text-black font-mono-tech text-xs font-bold">TGN_SPOTLIGHT</span>
+            <span class="font-mono-tech text-xs text-neutral-400">SKETCHFAB STREAM // ONLINE</span>
           </div>
           <h2 class="font-display text-3xl sm:text-5xl font-extrabold uppercase mt-2">
-            Interactive <span class="text-[#ccff00]">System Targets</span>
+            Interactive <span class="text-[#ccff00]">Sketchfab 3D Viewport</span>
           </h2>
         </div>
 
-        <!-- Engine Source Switcher Bar -->
-        <div class="flex flex-wrap items-center gap-2 font-mono-tech text-xs bg-[#0c0c0e] border border-white/15 p-2 rounded-sm">
-          <span class="text-neutral-400 px-2">3D SOURCE:</span>
-          <button onclick="switchViewerEngine('three')" id="engine-btn-three" class="px-3 py-1.5 bg-[#ccff00] text-black font-bold transition rounded-sm">
-            THREE.JS / .GLB
-          </button>
-          <button onclick="switchViewerEngine('sketchfab')" id="engine-btn-sketchfab" class="px-3 py-1.5 border border-white/15 text-neutral-300 hover:text-white transition rounded-sm">
-            SKETCHFAB EMBED
-          </button>
-          <label class="px-3 py-1.5 border border-[#ccff00]/50 text-[#ccff00] hover:bg-[#ccff00] hover:text-black cursor-pointer transition flex items-center gap-1.5 rounded-sm">
-            <span>📂 Load Local .GLB</span>
-            <input type="file" id="glb-file-input" accept=".glb,.gltf" class="hidden" onchange="handleLocalGLBUpload(event)" />
-          </label>
+        <div class="font-mono-tech text-xs bg-[#0c0c0e] border border-white/15 px-4 py-3 flex flex-wrap items-center gap-6">
+          <span>STREAM: <strong class="text-[#ccff00]">SECURE API</strong></span>
+          <span>RENDER: <strong class="text-[#ccff00]">WEBGL PBR</strong></span>
         </div>
       </div>
 
-      <!-- Quick Inline Sketchfab URL / UID Bar (Shown when Sketchfab mode is active or for quick testing) -->
-      <div id="sketchfab-quick-bar" class="mb-4 p-3.5 bg-[#0c0c0e] border border-white/15 flex flex-wrap items-center justify-between gap-3 font-mono-tech text-xs rounded-sm">
-        <div class="flex items-center gap-2">
-          <span class="text-[#ccff00] font-bold">[SKETCHFAB / MARMOSET LINK]</span>
-          <span class="text-neutral-400 hidden sm:inline">Paste any Sketchfab Model URL or UID for the active target:</span>
-        </div>
-        <div class="flex items-center gap-2 flex-1 max-w-xl">
-          <input id="quick-sketchfab-input" type="text" placeholder="e.g. https://sketchfab.com/3d-models/..." class="w-full bg-black border border-white/20 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#ccff00] rounded-sm" />
-          <button onclick="applyQuickSketchfabInput()" class="px-4 py-1.5 bg-[#ccff00] text-black font-bold uppercase hover:bg-white transition shrink-0 rounded-sm">
-            Embed 3D
-          </button>
-          <button onclick="loadDemoSketchfabProp()" title="Load a verified working Sketchfab 3D weapon prop for demonstration" class="px-3 py-1.5 border border-white/20 text-neutral-300 hover:border-[#ccff00] hover:text-[#ccff00] transition shrink-0 rounded-sm">
-            Load Demo Sketchfab
-          </button>
-        </div>
-      </div>
-
-      <!-- Main 3D HUD Viewport Container (Supports Drag-and-Drop .GLB) -->
-      <div id="viewport-dropzone" class="hud-box bg-[#08080a] relative h-[580px] w-full overflow-hidden rounded-sm">
-        
-        <!-- Drag-and-Drop .GLB Overlay Indicator -->
-        <div id="dropzone-overlay" class="pointer-events-none absolute inset-0 z-40 bg-black/85 border-2 border-dashed border-[#ccff00] hidden items-center justify-center flex-col gap-3 font-mono-tech">
-          <div class="px-4 py-2 bg-[#ccff00] text-black font-bold text-sm uppercase">DROP .GLB / .GLTF PROP FILE TO INSPECT</div>
-          <p class="text-xs text-neutral-300">Auto-calculates real triangle count, vertex count, and enables PBR / Wireframe / Clay modes</p>
+      <div class="hud-box bg-[#08080a] relative h-[580px] w-full overflow-hidden">
+        <div id="sketchfab-container" class="w-full h-full absolute inset-0">
+          <iframe id="sketchfab-iframe" title="3D Model Viewer" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share class="w-full h-full"></iframe>
         </div>
 
-        <!-- MODE A: Sketchfab Interactive Iframe Container -->
-        <div id="sketchfab-container" class="w-full h-full hidden relative z-10 bg-black">
-          <iframe id="sketchfab-iframe" title="Sketchfab 3D Prop Viewer" class="w-full h-full border-0" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-        </div>
-
-        <!-- MODE B & C: Three.js Real-Time Canvas (.GLB + Procedural Fallback) -->
-        <div id="spotlight-canvas" class="w-full h-full cursor-grab active:cursor-grabbing relative z-10"></div>
-
-        <!-- Top-Left Controls & Target Switcher -->
-        <div class="absolute top-5 left-5 z-20 flex flex-col gap-3 max-w-xs pointer-events-auto">
-          <div class="bg-black/85 backdrop-blur-md border border-white/15 p-3 font-mono-tech text-[11px] text-neutral-300 rounded-sm">
-            <p class="text-[#ccff00] font-bold mb-1">SYSTEM TARGETS (CLICK TO ACQUIRE)</p>
-            <div id="spotlight-target-buttons" class="grid grid-cols-2 gap-1.5 mt-2">
-              <!-- Populated from PORTFOLIO_CONFIG -->
-            </div>
-          </div>
-
-          <!-- Render Mode Buttons (Active in Three.js / .GLB mode) -->
-          <div id="three-shader-controls" class="bg-black/85 backdrop-blur-md border border-white/15 p-2 flex items-center gap-2 font-mono-tech text-[11px] rounded-sm">
-            <button onclick="setRenderMode('pbr')" id="mode-pbr" class="px-3 py-1 bg-[#ccff00] text-black font-bold rounded-sm">PBR LIT</button>
-            <button onclick="setRenderMode('wire')" id="mode-wire" class="px-3 py-1 border border-white/15 text-neutral-300 hover:text-white rounded-sm">WIREFRAME</button>
-            <button onclick="setRenderMode('clay')" id="mode-clay" class="px-3 py-1 border border-white/15 text-neutral-300 hover:text-white rounded-sm">CLAY MAT</button>
+        <div class="absolute top-5 left-5 z-10 flex flex-col gap-3 max-w-xs pointer-events-auto">
+          <div class="bg-black/90 backdrop-blur-md border border-white/15 p-3 font-mono-tech text-[11px] text-neutral-300">
+            <p class="text-[#ccff00] font-bold mb-1">SELECT ASSET FOR 3D VIEW</p>
+            <div id="spotlight-target-buttons" class="flex flex-col gap-1.5 mt-2 max-h-52 overflow-y-auto pr-1"></div>
           </div>
         </div>
 
-        <!-- Bottom-Left Tooltip -->
-        <div class="absolute bottom-5 left-5 z-20 bg-black/85 backdrop-blur-md border border-white/15 px-4 py-2.5 font-mono-tech text-xs flex flex-wrap items-center gap-4 text-neutral-300 pointer-events-none rounded-sm">
-          <span>🖱️ Orbit / Inspect</span>
-          <span>📂 Drag &amp; Drop .GLB File Anywhere</span>
+        <div class="absolute bottom-5 left-5 z-10 bg-black/90 backdrop-blur-md border border-white/15 px-4 py-2.5 font-mono-tech text-xs flex items-center gap-4 text-neutral-300 pointer-events-none">
+          <span>🖱️ Click &amp; Drag to Orbit</span>
+          <span>🔍 Scroll Zoom</span>
+          <span>⚡ Live PBR Sketchfab Embed</span>
         </div>
 
-        <!-- Right-Side Target Acquired Telemetry Panel -->
-        <div class="absolute top-5 right-5 bottom-5 w-72 bg-black/85 backdrop-blur-md border border-white/15 p-5 z-20 hidden lg:flex flex-col justify-between font-mono-tech rounded-sm">
+        <div class="absolute top-5 right-5 bottom-5 w-72 bg-black/90 backdrop-blur-md border border-white/15 p-5 z-10 hidden lg:flex flex-col justify-between font-mono-tech pointer-events-auto">
           <div>
             <div class="flex items-center justify-between border-b border-white/15 pb-3 mb-4">
-              <span id="hud-source-badge" class="text-[11px] text-[#ccff00] tracking-widest">TARGET ACQUIRED</span>
-              <span class="w-2 h-2 bg-[#ccff00] rounded-full"></span>
+              <span class="text-[11px] text-[#ccff00] tracking-widest">SKETCHFAB STREAM</span>
+              <span class="w-2 h-2 bg-[#ccff00] rounded-full animate-pulse"></span>
             </div>
-            <h3 id="hud-target-name" class="font-display text-2xl font-bold text-white uppercase mb-1">
-              MURAKUMOGIRI GLAIVE
-            </h3>
-            <p id="hud-target-cat" class="text-xs text-[#ccff00] mb-4">HERO MELEE WEAPON // PROP_01</p>
-            <p id="hud-target-desc" class="text-xs text-neutral-400 font-sans leading-relaxed mb-6">
-              High-to-low poly baked combat polearm with custom forged Damascus steel roughness maps and baked bevel normals.
-            </p>
+            <h3 id="hud-target-name" class="font-display text-2xl font-bold text-white uppercase mb-1">MURAKUMOGIRI</h3>
+            <p id="hud-target-cat" class="text-xs text-[#ccff00] mb-4">WEAPON // PROP_01</p>
+            <p id="hud-target-desc" class="text-xs text-neutral-400 font-sans leading-relaxed mb-6">High-to-low poly baked combat polearm with custom Damascus steel roughness maps.</p>
 
             <div class="space-y-2.5 text-xs border-t border-white/10 pt-4">
-              <div class="flex justify-between">
-                <span class="text-neutral-500">STATUS</span>
-                <span class="text-[#ccff00]">OPERATIONAL</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-neutral-500">POLYCOUNT</span>
-                <span id="hud-target-tris" class="text-white">12,400 TRIS</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-neutral-500">UV MAPS</span>
-                <span id="hud-target-uv" class="text-white">4096 x 4096 PBR</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-neutral-500">COORDS</span>
-                <span id="hud-coords" class="text-white">X:14 Y:08 Z:-03</span>
-              </div>
+              <div class="flex justify-between"><span class="text-neutral-500">STATUS</span><span class="text-[#ccff00]">ONLINE</span></div>
+              <div class="flex justify-between"><span class="text-neutral-500">POLYCOUNT</span><span id="hud-target-tris" class="text-white">8,420 TRIS</span></div>
+              <div class="flex justify-between"><span class="text-neutral-500">VIEWER</span><span class="text-white">SKETCHFAB PBR</span></div>
             </div>
           </div>
 
-          <div class="space-y-3 border-t border-white/15 pt-3">
-            <a id="hud-artstation-link" href="https://www.artstation.com/tonoy8663" target="_blank" rel="noopener" class="block w-full text-center py-2 border border-[#ccff00]/60 text-[#ccff00] text-xs hover:bg-[#ccff00] hover:text-black transition rounded-sm">
-              VIEW RENDERS ON ARTSTATION ↗
-            </a>
-            <div class="text-[11px] text-neutral-400 flex items-center justify-between">
-              <span>ENGINE: UE5 / UNITY</span>
-              <span class="text-[#ccff00]">READY ✓</span>
-            </div>
+          <div class="border-t border-white/15 pt-3 text-[11px] text-neutral-400 flex items-center justify-between">
+            <a id="hud-artstation-link" href="https://www.artstation.com/tonoy8663" target="_blank" class="text-[#ccff00] underline hover:text-white">VIEW FULL POST ↗</a>
+            <span class="text-[#ccff00]">READY ✓</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PROFILE & BIO SECTION ("HI, THIS IS TONOY") -->
+  <!-- PROFILE & BIO SECTION -->
   <section id="profile" class="py-24 px-6 border-b border-white/10">
     <div class="max-w-7xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-
-        <!-- Left Portrait Frame (IMG_001.RAW style) -->
         <div class="lg:col-span-5">
-          <div class="hud-box bg-[#0c0c0e] p-4 rounded-sm">
+          <div class="hud-box bg-[#0c0c0e] p-4">
             <div class="flex items-center justify-between font-mono-tech text-xs text-neutral-400 mb-3">
               <span>TGN_PORTRAIT_001.RAW</span>
-              <button onclick="toggleAssetDrawer(true)" class="text-[#ccff00] hover:underline">CHANGE PHOTO ⚙</button>
+              <span class="text-[#ccff00]">REC ●</span>
             </div>
-            <div class="relative aspect-[4/5] bg-neutral-900 overflow-hidden rounded-sm">
-              <img id="operator-portrait-img" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80" alt="Tonoy Ghose Niloy Digital Portrait" onerror="this.src='https://placehold.co/800x1000/0c0c0e/ccff00?text=TONOY+GHOSE+NILOY'" class="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition duration-500" />
-              <div class="absolute bottom-4 left-4 right-4 bg-black/85 backdrop-blur-md border border-white/15 p-4 font-mono-tech text-xs rounded-sm">
+            <div class="relative aspect-[4/5] bg-neutral-900 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80" alt="Tonoy Ghose Niloy Digital Portrait" class="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition duration-500" />
+              <div class="absolute bottom-4 left-4 right-4 bg-black/85 backdrop-blur-md border border-white/15 p-4 font-mono-tech text-xs">
                 <p class="text-[#ccff00] font-bold">TONOY GHOSE NILOY</p>
                 <p class="text-neutral-300 mt-0.5">B.Sc. in Multimedia &amp; Creative Technology</p>
                 <p class="text-neutral-500 text-[11px]">Daffodil International University</p>
@@ -419,7 +304,6 @@
           </div>
         </div>
 
-        <!-- Right Bio Narrative -->
         <div class="lg:col-span-7">
           <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-3">// OPERATOR_PROFILE</p>
           <h2 class="font-display text-4xl sm:text-6xl font-extrabold uppercase leading-none mb-6">
@@ -429,84 +313,22 @@
             I forge clean topology and make PBR shaders talk.
           </p>
           <div class="space-y-4 text-neutral-300 leading-relaxed">
-            <p>
-              If you're exploring this system, you'll see a 3D Prop Artist. But under the hood? I'm obsessed with the intersection of real-time game optimization and tactile visual storytelling.
-            </p>
-            <p>
-              From modeling complex hard-surface weapons and modular Mars habitats to designing commercial 3D packaging and trade-show environments, I love the technical puzzle of non-overlapping UV layouts, cage baking, and draw-call optimization just as much as sculpting the final silhouette.
-            </p>
+            <p>If you're exploring this system, you'll see a 3D Prop Artist. But under the hood? I'm obsessed with the intersection of real-time game optimization and tactile visual storytelling.</p>
+            <p>From modeling complex hard-surface weapons and modular Mars habitats to designing commercial 3D packaging and trade-show environments, I love the technical puzzle of non-overlapping UV layouts, cage baking, and draw-call optimization just as much as sculpting the final silhouette.</p>
           </div>
 
-          <!-- Role & Focus Spec Grid -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 pt-8 border-t border-white/15 font-mono-tech">
-            <div>
-              <span class="text-[11px] text-neutral-500 block">ROLE</span>
-              <strong class="text-sm text-white">3D Prop Artist</strong>
-            </div>
-            <div>
-              <span class="text-[11px] text-neutral-500 block">FOCUS</span>
-              <strong class="text-sm text-white">Hard-Surface &amp; PBR</strong>
-            </div>
-            <div>
-              <span class="text-[11px] text-neutral-500 block">CORE STACK</span>
-              <strong class="text-sm text-[#ccff00]">Blender / Painter / UE5</strong>
-            </div>
-            <div>
-              <span class="text-[11px] text-neutral-500 block">PORTFOLIO</span>
-              <a href="https://www.artstation.com/tonoy8663" target="_blank" class="text-sm text-white underline hover:text-[#ccff00]">@tonoy8663</a>
-            </div>
+            <div><span class="text-[11px] text-neutral-500 block">ROLE</span><strong class="text-sm text-white">3D Prop Artist</strong></div>
+            <div><span class="text-[11px] text-neutral-500 block">FOCUS</span><strong class="text-sm text-white">Hard-Surface &amp; PBR</strong></div>
+            <div><span class="text-[11px] text-neutral-500 block">CORE STACK</span><strong class="text-sm text-[#ccff00]">Blender / Painter / UE5</strong></div>
+            <div><span class="text-[11px] text-neutral-500 block">PORTFOLIO</span><a href="https://www.artstation.com/tonoy8663" target="_blank" class="text-sm text-white underline hover:text-[#ccff00]">@tonoy8663</a></div>
           </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- PRODUCTION MILESTONES & HONORS -->
-  <section class="py-24 px-6 border-b border-white/10">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-14">
-        <div>
-          <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-2">// VERIFIED_CREDENTIALS</p>
-          <h2 class="font-display text-4xl sm:text-5xl font-extrabold uppercase">
-            Milestones <span class="text-neutral-500">&amp; Research</span>
-          </h2>
-        </div>
-        <span class="font-mono-tech text-xs text-neutral-400">ACADEMIC &amp; COMMERCIAL HIGHLIGHTS</span>
-      </div>
-
-      <div class="divide-y divide-white/10 border-t border-b border-white/10">
-        <div class="py-8 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-white/[0.02] px-4 transition">
-          <div>
-            <span class="font-mono-tech text-xs text-[#ccff00]">2026 // GAME PIPELINE RESEARCH</span>
-            <h3 class="font-display text-2xl font-bold uppercase mt-1">3D Game Asset Optimization &amp; Real-Time Topology Gaps</h3>
-            <p class="text-neutral-400 text-sm mt-1">Researching polygon mesh optimization and AI-assisted 3D modeling workflows at Daffodil International University.</p>
-          </div>
-          <span class="font-mono-tech text-xs px-4 py-2 border border-white/15 text-neutral-300 self-start md:self-center shrink-0 rounded-sm">MCT DEPARTMENT</span>
-        </div>
-
-        <div class="py-8 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-white/[0.02] px-4 transition">
-          <div>
-            <span class="font-mono-tech text-xs text-[#ccff00]">2026 // ANIMATED SHORT FILM PRODUCTION</span>
-            <h3 class="font-display text-2xl font-bold uppercase mt-1">"The Last Heartbeat" — 3D Short Film</h3>
-            <p class="text-neutral-400 text-sm mt-1">Lead 3D storyboard, camera blocking, and character prop asset creation for floating robot protagonists Lumi and Nova.</p>
-          </div>
-          <span class="font-mono-tech text-xs px-4 py-2 border border-white/15 text-neutral-300 self-start md:self-center shrink-0 rounded-sm">LEAD 3D ARTIST</span>
-        </div>
-
-        <div class="py-8 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-white/[0.02] px-4 transition">
-          <div>
-            <span class="font-mono-tech text-xs text-[#ccff00]">2025 - 2026 // COMMERCIAL &amp; INDUSTRIAL ARCHVIZ</span>
-            <h3 class="font-display text-2xl font-bold uppercase mt-1">100-Asset Interior Package &amp; RMG Trade Show Booths</h3>
-            <p class="text-neutral-400 text-sm mt-1">Delivered 3ds Max / V-Ray interior prop libraries and 4x4m spatial exhibition stands for Bangla Textiles.</p>
-          </div>
-          <span class="font-mono-tech text-xs px-4 py-2 border border-white/15 text-neutral-300 self-start md:self-center shrink-0 rounded-sm">CLIENT DELIVERY</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- EXPERTISE (01 - 08 DRAG TO EXPLORE CAROUSEL) -->
+  <!-- EXPERTISE CAROUSEL -->
   <section class="py-24 px-6 border-b border-white/10 overflow-hidden">
     <div class="max-w-7xl mx-auto">
       <div class="flex items-center justify-between mb-12">
@@ -514,81 +336,25 @@
           <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-2">// CAPABILITY_MATRIX</p>
           <h2 class="font-display text-4xl sm:text-5xl font-extrabold uppercase">Expertise</h2>
         </div>
-        <div class="flex items-center gap-3 font-mono-tech text-xs text-[#ccff00] border border-[#ccff00]/40 px-4 py-2 rounded-sm">
+        <div class="flex items-center gap-3 font-mono-tech text-xs text-[#ccff00] border border-[#ccff00]/40 px-4 py-2">
           <span>← DRAG TO EXPLORE →</span>
         </div>
       </div>
 
-      <!-- Horizontal Draggable Cards (01 to 08) -->
       <div id="expertise-slider" class="drag-slider flex gap-6 overflow-x-auto pb-4">
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between rounded-sm">
-          <span class="font-mono-tech text-3xl font-bold text-[#ccff00]">01</span>
-          <div class="mt-12">
-            <h3 class="font-display text-2xl font-bold uppercase mb-2">Hard-Surface<br/>Modeling</h3>
-            <p class="text-neutral-400 text-sm">Weapons, sci-fi mechanisms, and industrial props with crisp bevels and zero shading artifacts.</p>
-          </div>
-        </div>
-
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between rounded-sm">
-          <span class="font-mono-tech text-3xl font-bold text-[#ccff00]">02</span>
-          <div class="mt-12">
-            <h3 class="font-display text-2xl font-bold uppercase mb-2">Low-Poly Game<br/>Optimization</h3>
-            <p class="text-neutral-400 text-sm">Strict triangle budgets, clean silhouette retention, and LOD chain creation for Unreal Engine 5.</p>
-          </div>
-        </div>
-
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between rounded-sm">
-          <span class="font-mono-tech text-3xl font-bold text-[#ccff00]">03</span>
-          <div class="mt-12">
-            <h3 class="font-display text-2xl font-bold uppercase mb-2">High-to-Low<br/>Normal Baking</h3>
-            <p class="text-neutral-400 text-sm">Marmoset Toolbag &amp; Substance cage bakes for flawless curvature, AO, and tangent-space normals.</p>
-          </div>
-        </div>
-
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between rounded-sm">
-          <span class="font-mono-tech text-3xl font-bold text-[#ccff00]">04</span>
-          <div class="mt-12">
-            <h3 class="font-display text-2xl font-bold uppercase mb-2">PBR Material<br/>Authoring</h3>
-            <p class="text-neutral-400 text-sm">Substance 3D Painter &amp; Designer workflows with realistic micro-surface wear and storytelling.</p>
-          </div>
-        </div>
-
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between rounded-sm">
-          <span class="font-mono-tech text-3xl font-bold text-[#ccff00]">05</span>
-          <div class="mt-12">
-            <h3 class="font-display text-2xl font-bold uppercase mb-2">UV Unwrapping &amp;<br/>Texel Density</h3>
-            <p class="text-neutral-400 text-sm">Maximized UV packing efficiency, straightened shells, and hidden seams for crisp 4K bakes.</p>
-          </div>
-        </div>
-
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between rounded-sm">
-          <span class="font-mono-tech text-3xl font-bold text-[#ccff00]">06</span>
-          <div class="mt-12">
-            <h3 class="font-display text-2xl font-bold uppercase mb-2">ZBrush Sculpting<br/>&amp; Retopology</h3>
-            <p class="text-neutral-400 text-sm">Organic surface detailing, ornamental weapon hilts, damage sculpting, and quad-draw retopo.</p>
-          </div>
-        </div>
-
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between rounded-sm">
-          <span class="font-mono-tech text-3xl font-bold text-[#ccff00]">07</span>
-          <div class="mt-12">
-            <h3 class="font-display text-2xl font-bold uppercase mb-2">Exhibition &amp;<br/>ArchViz Booths</h3>
-            <p class="text-neutral-400 text-sm">Commercial 3D stall layouts, lighting schemes, and V-Ray product visualization renders.</p>
-          </div>
-        </div>
-
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between rounded-sm">
-          <span class="font-mono-tech text-3xl font-bold text-[#ccff00]">08</span>
-          <div class="mt-12">
-            <h3 class="font-display text-2xl font-bold uppercase mb-2">3D Packaging<br/>&amp; Dielines</h3>
-            <p class="text-neutral-400 text-sm">Illustrator vector dielines translated into photorealistic 3D studio product mockups.</p>
-          </div>
-        </div>
+        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">01</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">Hard-Surface<br/>Modeling</h3><p class="text-neutral-400 text-sm">Weapons, sci-fi mechanisms, and industrial props with crisp bevels and zero shading artifacts.</p></div></div>
+        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">02</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">Low-Poly Game<br/>Optimization</h3><p class="text-neutral-400 text-sm">Strict triangle budgets, clean silhouette retention, and LOD chain creation for Unreal Engine 5.</p></div></div>
+        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">03</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">High-to-Low<br/>Normal Baking</h3><p class="text-neutral-400 text-sm">Marmoset Toolbag &amp; Substance cage bakes for flawless curvature, AO, and tangent-space normals.</p></div></div>
+        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">04</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">PBR Material<br/>Authoring</h3><p class="text-neutral-400 text-sm">Substance 3D Painter &amp; Designer workflows with realistic micro-surface wear and storytelling.</p></div></div>
+        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">05</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">UV Unwrapping &amp;<br/>Texel Density</h3><p class="text-neutral-400 text-sm">Maximized UV packing efficiency, straightened shells, and hidden seams for crisp 4K bakes.</p></div></div>
+        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">06</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">ZBrush Sculpting<br/>&amp; Retopology</h3><p class="text-neutral-400 text-sm">Organic surface detailing, ornamental weapon hilts, damage sculpting, and quad-draw retopo.</p></div></div>
+        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">07</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">Exhibition &amp;<br/>ArchViz Booths</h3><p class="text-neutral-400 text-sm">Commercial 3D stall layouts, lighting schemes, and V-Ray product visualization renders.</p></div></div>
+        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">08</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">3D Packaging<br/>&amp; Dielines</h3><p class="text-neutral-400 text-sm">Illustrator vector dielines translated into photorealistic 3D studio product mockups.</p></div></div>
       </div>
     </div>
   </section>
 
-  <!-- CONTACT SECTION ("START A PROJECT // SAY HELLO") -->
+  <!-- CONTACT SECTION -->
   <section id="contact" class="py-24 px-6">
     <div class="max-w-7xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -609,31 +375,29 @@
         </div>
 
         <div class="lg:col-span-6">
-          <form onsubmit="handleContactSubmit(event)" class="hud-box bg-[#0c0c0e] p-8 space-y-6 rounded-sm">
+          <form onsubmit="handleContactSubmit(event)" class="hud-box bg-[#0c0c0e] p-8 space-y-6">
             <div>
               <label class="block font-mono-tech text-xs uppercase text-neutral-400 mb-2">Name / Studio</label>
-              <input type="text" required placeholder="Enter your name or studio" class="w-full bg-black border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ccff00] rounded-sm" />
+              <input type="text" required placeholder="Enter your name or studio" class="w-full bg-black border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ccff00]" />
             </div>
             <div>
               <label class="block font-mono-tech text-xs uppercase text-neutral-400 mb-2">Email Address</label>
-              <input type="email" required placeholder="studio@example.com" class="w-full bg-black border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ccff00] rounded-sm" />
+              <input type="email" required placeholder="studio@example.com" class="w-full bg-black border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ccff00]" />
             </div>
             <div>
               <label class="block font-mono-tech text-xs uppercase text-neutral-400 mb-2">Project Brief / Asset Specs</label>
-              <textarea rows="4" required placeholder="Tell me about your prop list, target engine (UE5/Unity), polycount budget, and deadline..." class="w-full bg-black border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ccff00] rounded-sm"></textarea>
+              <textarea rows="4" required placeholder="Tell me about your prop list, target engine (UE5/Unity), polycount budget, and deadline..." class="w-full bg-black border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ccff00]"></textarea>
             </div>
-            <button type="submit" id="submit-btn" class="w-full py-4 bg-[#ccff00] text-black font-mono-tech text-xs font-bold uppercase tracking-widest hover:bg-white transition rounded-sm">
+            <button type="submit" id="submit-btn" class="w-full py-4 bg-[#ccff00] text-black font-mono-tech text-xs font-bold uppercase tracking-widest hover:bg-white transition">
               SEND MESSAGE →
             </button>
           </form>
         </div>
       </div>
 
-      <!-- Footer -->
       <div class="mt-20 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono-tech text-xs text-neutral-500">
-        <p>© 2026 TONOY GHOSE NILOY. ALL RIGHTS RESERVED.</p>
+        <p>© 2026 TONOY GHOSE NILOY. ALL RIGHTS RESERVED. [SECURE DEPLOYMENT]</p>
         <div class="flex items-center gap-6">
-          <button onclick="toggleAssetDrawer(true)" class="hover:text-[#ccff00] transition">⚙ ASSET MANAGER</button>
           <a href="https://www.artstation.com/tonoy8663" target="_blank" class="hover:text-[#ccff00] transition">ARTSTATION</a>
           <a href="#home" class="hover:text-[#ccff00] transition">BACK TO TOP ↑</a>
         </div>
@@ -641,721 +405,285 @@
     </div>
   </section>
 
-  <!-- =========================================================================
-       MASTER PORTFOLIO CONFIGURATION & 3D VIEWPORT SCRIPT
-       ========================================================================= -->
+  <!-- JAVASCRIPT: PORTFOLIO DATASET WITH SKETCHFAB & YOUTUBE SHOWREEL -->
   <script>
-    /**
-     * =========================================================================
-     * 1. MASTER PORTFOLIO_CONFIG (EDIT HERE OR VIA THE IN-BROWSER ASSET MANAGER)
-     * =========================================================================
-     * Tip for Tonoy:
-     * - Paste your direct ArtStation image links (`https://cdna.artstation.com/p/assets/...`) into `thumbnailUrl`
-     * - Paste your ArtStation project URL (`https://www.artstation.com/artwork/...`) into `artstationUrl`
-     * - Paste any Sketchfab URL or 32-char Model ID into `sketchfabInput` to automatically embed Sketchfab 3D!
-     */
-    const DEFAULT_PORTFOLIO_CONFIG = {
-      artistPortraitUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80",
-      projects: [
-        {
-          id: "01",
-          shortButtonLabel: "01. GLAIVE_WEAPON",
-          badgeLeft: "01 // HERO WEAPONRY",
-          badgeRight: "12.4K TRIS • 4K PBR",
-          categorySub: "Hard-Surface & Melee Props",
-          toolsTag: "BLENDER + PAINTER",
-          title: "Emberfang Blade & Murakumogiri",
-          description: "Real-world meter scaled polearms and fantasy blades with high-to-low poly normal baking, custom edge-wear masks, and anisotropic metal shaders.",
-          footerSpec: "TEXEL DENSITY: 10.24 px/cm",
-          thumbnailUrl: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1000&q=80",
-          artstationUrl: "https://www.artstation.com/tonoy8663",
-          sketchfabInput: "", // Leave empty for procedural 3D, or paste Sketchfab URL / UID
-          tris: "12,400 TRIS",
-          uv: "4096 x 4096 PBR",
-          coords: "X:14 Y:08 Z:-03"
-        },
-        {
-          id: "02",
-          shortButtonLabel: "02. MARS_CORE",
-          badgeLeft: "02 // ENVIRONMENT & LEVEL DESIGN",
-          badgeRight: "MODULAR KIT • UE5",
-          categorySub: "Low-Poly Sci-Fi Architecture",
-          toolsTag: "UNREAL ENGINE 5",
-          title: "Mars Colony Command Dome & Rover",
-          description: "Optimized modular colony habitats, solar arrays, and pressurized recon rovers utilizing trim sheets and weighted vertex normals for zero-lag real-time rendering.",
-          footerSpec: "LOD0 - LOD3 READY",
-          thumbnailUrl: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=1000&q=80",
-          artstationUrl: "https://www.artstation.com/tonoy8663",
-          sketchfabInput: "",
-          tris: "18,500 TRIS",
-          uv: "2048 x 2048 TRIM",
-          coords: "X:42 Y:-19 Z:11"
-        },
-        {
-          id: "03",
-          shortButtonLabel: "03. PAVILION_4X4",
-          badgeLeft: "03 // SPATIAL & COMMERCIAL 3D",
-          badgeRight: "4x4M SCALE • V-RAY",
-          categorySub: "3D Modeling & Product Visualization",
-          toolsTag: "3DS MAX + V-RAY",
-          title: "Bangla Textiles 4x4m Booth & Packaging",
-          description: "Precision-scaled 4x4m trade show exhibition pavilion with custom fabric library racks, alongside bespoke 3D dieline mockups for commercial Black Tea packaging.",
-          footerSpec: "PHOTOREAL LIGHTING",
-          thumbnailUrl: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=80",
-          artstationUrl: "https://www.artstation.com/tonoy8663",
-          sketchfabInput: "",
-          tris: "14,900 TRIS",
-          uv: "4K UDIM + V-RAY",
-          coords: "X:04 Y:04 Z:00"
-        },
-        {
-          id: "04",
-          shortButtonLabel: "04. LUMI_DROID",
-          badgeLeft: "04 // SHORT FILM & MECHA DESIGN",
-          badgeRight: "RIGGED • EMISSIVE HUD",
-          categorySub: "3D Animated Short Film",
-          toolsTag: "BLENDER + MARMOSET",
-          title: "The Last Heartbeat // Lumi & Nova",
-          description: "Floating white companion robots and hard-surface sci-fi props built for narrative animation, featuring clean subdivision topology and animated visor telemetry.",
-          footerSpec: "SUB-D + GAME TOPOLOGY",
-          thumbnailUrl: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1000&q=80",
-          artstationUrl: "https://www.artstation.com/tonoy8663",
-          sketchfabInput: "",
-          tris: "9,640 TRIS",
-          uv: "4096 x 4096 PBR",
-          coords: "X:00 Y:27 Z:09"
-        }
-      ]
-    };
-
-    // Load saved config from localStorage or fall back to DEFAULT_PORTFOLIO_CONFIG
-    const STORAGE_KEY = "TGN_PORTFOLIO_CONFIG_V1";
-    let PORTFOLIO_CONFIG = loadPortfolioConfig();
-
-    function loadPortfolioConfig() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          return JSON.parse(saved);
-        }
-      } catch (e) {
-        console.warn("Could not read localStorage config:", e);
+    const PORTFOLIO_PROJECTS = [
+      {
+        id: 1,
+        title: "Murakumogiri Glaive & Emberfang Blade",
+        category: "WEAPONS",
+        sub: "Hard-Surface & Melee Props",
+        image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "12,400 TRIS",
+        pbr: "4K PBR TEXTURES",
+        desc: "Real-world meter scaled polearms and fantasy blades with high-to-low poly normal baking, custom edge-wear masks, and anisotropic metal shaders.",
+        tag: "BLENDER + PAINTER"
+      },
+      {
+        id: 2,
+        title: "Mars Colony Command Dome & Rover",
+        category: "ENVIRONMENTS",
+        sub: "Low-Poly Sci-Fi Architecture",
+        image: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "6,180 TRIS",
+        pbr: "TRIM SHEET READY",
+        desc: "Optimized modular colony habitats, solar arrays, and pressurized recon rovers utilizing trim sheets and weighted vertex normals for zero-lag UE5 performance.",
+        tag: "UNREAL ENGINE 5"
+      },
+      {
+        id: 3,
+        title: "Bangla Textiles 4x4m Exhibition Booth",
+        category: "ARCHVIZ",
+        sub: "3D Modeling & Product Visualization",
+        image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "14,900 TRIS",
+        pbr: "4K UDIM + V-RAY",
+        desc: "Precision-scaled 4x4 meter trade show exhibition pavilion with custom fabric library racks, alongside bespoke 3D dieline mockups for commercial packaging.",
+        tag: "3DS MAX + V-RAY"
+      },
+      {
+        id: 4,
+        title: "The Last Heartbeat // Lumi & Nova",
+        category: "FILM",
+        sub: "3D Animated Short Film",
+        image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "9,640 TRIS",
+        pbr: "EMISSIVE HUD PBR",
+        desc: "Floating white companion robots and hard-surface sci-fi props built for narrative animation, featuring clean subdivision topology and animated visor telemetry.",
+        tag: "BLENDER + MARMOSET"
+      },
+      {
+        id: 5,
+        title: "Tactical Sci-Fi Fusion Reactor Core",
+        category: "WEAPONS",
+        sub: "Hard-Surface Industrial Prop",
+        image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "7,500 TRIS",
+        pbr: "2K TEXTURE SET",
+        desc: "Modular energy core container featuring interlocking heat sinks, warning decals, and emissive core channels optimized for first-person shooters.",
+        tag: "SUBSTANCE PAINTER"
+      },
+      {
+        id: 6,
+        title: "ArchiFab 3D Scale Prototype Kit",
+        category: "ARCHVIZ",
+        sub: "3D Printing & Architectural Assets",
+        image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "11,200 TRIS",
+        pbr: "WATERTIGHT MESH",
+        desc: "Solid-manifold architectural model parts engineered specifically for high-detail resin 3D printing and miniature prototype visualization.",
+        tag: "ZBRUSH + BLENDER"
+      },
+      {
+        id: 7,
+        title: "Black Tea Commercial Packaging Mockup",
+        category: "PACKAGING",
+        sub: "Commercial Dieline & 3D Render",
+        image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "4,200 TRIS",
+        pbr: "VECTOR DIELINE + RENDER",
+        desc: "Bilingual packaging typography, clean dieline folding layout, and photorealistic studio lighting for commercial tea branding.",
+        tag: "ILLUSTRATOR + BLENDER"
+      },
+      {
+        id: 8,
+        title: "100-Asset Interior Design Package",
+        category: "ENVIRONMENTS",
+        sub: "ArchViz Prop Collection",
+        image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "85,000 TOTAL",
+        pbr: "SHARED TEXTURE ATLAS",
+        desc: "Comprehensive collection of modern architectural furniture, lighting fixtures, and decor props optimized for real-time walkthroughs.",
+        tag: "3DS MAX + V-RAY"
+      },
+      {
+        id: 9,
+        title: "ArenaX Sci-Fi Sports Magazine Branding",
+        category: "PACKAGING",
+        sub: "Vector Logo & 3D Cover Art",
+        image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "5,800 TRIS",
+        pbr: "PBR METALNESS",
+        desc: "Pencil sketch logo translation, typographic masthead development, and 3D floating holographic sports insignia.",
+        tag: "ILLUSTRATOR + SUBSTANCE"
+      },
+      {
+        id: 10,
+        title: "Pharma Finder UI & Scan Interface",
+        category: "FILM",
+        sub: "Sci-Fi HUD & Mobile Assets",
+        image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80",
+        artstationUrl: "https://www.artstation.com/tonoy8663",
+        sketchfabId: "654321abcdef",
+        tris: "3,100 TRIS",
+        pbr: "EMISSIVE SHADER",
+        desc: "Holographic scanning reticle and medical UI prop elements designed for augmented reality and futuristic game sequences.",
+        tag: "UNREAL ENGINE 5"
       }
-      return JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO_CONFIG));
+    ];
+
+    let currentCategory = 'ALL';
+    let currentDensity = 2;
+
+    function renderProjects() {
+      const grid = document.getElementById('projects-grid');
+      const searchVal = document.getElementById('work-search').value.toLowerCase();
+      grid.className = currentDensity === 2 
+        ? "grid grid-cols-1 md:grid-cols-2 gap-8" 
+        : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
+
+      const filtered = PORTFOLIO_PROJECTS.filter(p => {
+        const matchesCat = currentCategory === 'ALL' || p.category === currentCategory;
+        const matchesSearch = p.title.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal) || p.sub.toLowerCase().includes(searchVal);
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-16 text-center font-mono-tech text-neutral-500 text-sm">NO SYSTEM ASSETS MATCHED CRITERIA.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map((p, index) => `
+        <article class="hud-box bg-[#0c0c0e] group overflow-hidden flex flex-col justify-between">
+          <div class="relative h-72 overflow-hidden bg-neutral-900">
+            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover opacity-75 group-hover:scale-105 group-hover:opacity-100 transition duration-700" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0c0c0e] via-transparent to-transparent"></div>
+            <span class="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-white/15 font-mono-tech text-[11px] text-[#ccff00]">
+              0${index + 1} // ${p.sub.toUpperCase()}
+            </span>
+            <span class="absolute top-4 right-4 px-3 py-1 bg-black/80 font-mono-tech text-[11px] text-neutral-300">
+              ${p.tris} • ${p.pbr}
+            </span>
+          </div>
+          <div class="p-8">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-mono-tech text-xs uppercase tracking-widest text-neutral-400">${p.sub}</span>
+              <span class="font-mono-tech text-xs text-[#ccff00]">${p.tag}</span>
+            </div>
+            <h3 class="font-display text-2xl font-bold uppercase mb-3 group-hover:text-[#ccff00] transition">
+              ${p.title}
+            </h3>
+            <p class="text-neutral-400 text-sm leading-relaxed mb-6">
+              ${p.desc}
+            </p>
+            <div class="flex flex-wrap items-center justify-between border-t border-white/10 pt-4 font-mono-tech text-xs gap-3">
+              <a href="#spotlight" onclick="jumpToSpotlight(${p.id - 1})" class="text-[#ccff00] hover:underline">INSPECT IN 3D →</a>
+              <a href="${p.artstationUrl}" target="_blank" rel="noopener" class="px-3 py-1.5 border border-white/20 text-neutral-300 hover:border-[#ccff00] hover:text-[#ccff00] transition">
+                View on ArtStation ↗
+              </a>
+            </div>
+          </div>
+        </article>
+      `).join('');
     }
 
-    function showSystemToast(title, msg) {
-      const toast = document.getElementById('sys-toast');
-      document.getElementById('sys-toast-title').textContent = title;
-      document.getElementById('sys-toast-msg').textContent = msg;
-      toast.classList.remove('translate-y-28', 'opacity-0');
-      setTimeout(() => {
-        toast.classList.add('translate-y-28', 'opacity-0');
-      }, 3600);
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.textContent.includes(cat) || (cat === 'ALL' && btn.textContent.includes('ALL'))) {
+          btn.className = "cat-btn px-4 py-2 border border-[#ccff00] bg-[#ccff00]/15 text-white";
+        } else {
+          btn.className = "cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white";
+        }
+      });
+      renderProjects();
     }
 
-    /**
-     * =========================================================================
-     * 2. DYNAMICALLY RENDER SELECTED WORK 4-QUAD GRID & TARGET BUTTONS
-     * =========================================================================
-     */
-    function renderPortfolioUI() {
-      // Update Portrait
-      const portraitEl = document.getElementById('operator-portrait-img');
-      if (portraitEl && PORTFOLIO_CONFIG.artistPortraitUrl) {
-        portraitEl.src = PORTFOLIO_CONFIG.artistPortraitUrl;
-      }
+    function filterProjects() { renderProjects(); }
 
-      // Render 4-Quad Selected Work Cards
-      const grid = document.getElementById('selected-work-grid');
-      grid.innerHTML = PORTFOLIO_CONFIG.projects.map((proj, idx) => {
-        const hasSketchfab = Boolean(extractSketchfabUID(proj.sketchfabInput));
-        return `
-          <article class="hud-box bg-[#0c0c0e] group overflow-hidden flex flex-col justify-between rounded-sm">
-            <div class="relative h-80 overflow-hidden bg-neutral-900">
-              <img src="${proj.thumbnailUrl}" 
-                   alt="${proj.title}" 
-                   onerror="this.src='https://placehold.co/1000x650/0c0c0e/ccff00?text=ARTSTATION+THUMBNAIL+${proj.id}'"
-                   class="w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition duration-700" />
-              <div class="absolute inset-0 bg-gradient-to-t from-[#0c0c0e] via-transparent to-transparent"></div>
-              <span class="absolute top-4 left-4 px-3 py-1 bg-black/85 border border-white/15 font-mono-tech text-[11px] text-[#ccff00] rounded-sm">
-                ${proj.badgeLeft}
-              </span>
-              <span class="absolute top-4 right-4 px-3 py-1 bg-black/85 font-mono-tech text-[11px] text-neutral-300 rounded-sm">
-                ${proj.badgeRight}
-              </span>
-              ${hasSketchfab ? `
-                <span class="absolute bottom-4 left-4 px-2.5 py-1 bg-[#ccff00] text-black font-mono-tech text-[10px] font-bold uppercase rounded-sm">
-                  ★ SKETCHFAB 3D EMBED LINKED
-                </span>
-              ` : ''}
-            </div>
-            <div class="p-8">
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-mono-tech text-xs uppercase tracking-widest text-neutral-400">${proj.categorySub}</span>
-                <span class="font-mono-tech text-xs text-[#ccff00]">${proj.toolsTag}</span>
-              </div>
-              <h3 class="font-display text-2xl sm:text-3xl font-bold uppercase mb-3 group-hover:text-[#ccff00] transition">
-                ${proj.title}
-              </h3>
-              <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-                ${proj.description}
-              </p>
-              <div class="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 font-mono-tech text-xs">
-                <span class="text-neutral-300">${proj.footerSpec}</span>
-                <div class="flex items-center gap-4">
-                  <a href="${proj.artstationUrl}" target="_blank" rel="noopener" class="text-neutral-400 hover:text-white underline">
-                    ARTSTATION ↗
-                  </a>
-                  <a href="#spotlight" onclick="selectSpotlightTarget(${idx})" class="text-[#ccff00] font-bold hover:underline">
-                    INSPECT IN 3D →
-                  </a>
-                </div>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('');
+    function setLayoutDensity(cols) {
+      currentDensity = cols;
+      document.getElementById('density-2').className = cols === 2 ? "px-3 py-2 border border-white/20 bg-[#ccff00] text-black font-bold" : "px-3 py-2 border border-white/20 text-neutral-400 hover:text-white";
+      document.getElementById('density-3').className = cols === 3 ? "px-3 py-2 border border-white/20 bg-[#ccff00] text-black font-bold" : "px-3 py-2 border border-white/20 text-neutral-400 hover:text-white";
+      renderProjects();
+    }
 
-      // Render Target Acquisition Buttons inside TGN_SPOTLIGHT
-      const targetBtns = document.getElementById('spotlight-target-buttons');
-      targetBtns.innerHTML = PORTFOLIO_CONFIG.projects.map((proj, idx) => `
-        <button onclick="selectSpotlightTarget(${idx})" id="target-btn-${idx}" class="target-btn px-2.5 py-1.5 text-left border border-white/15 hover:border-white/40 text-neutral-400 transition truncate rounded-sm">
-          ${proj.shortButtonLabel}
+    let currentTargetIndex = 0;
+
+    function initSpotlight() {
+      buildSpotlightButtons();
+      selectSpotlightTarget(0);
+    }
+
+    function buildSpotlightButtons() {
+      const container = document.getElementById('spotlight-target-buttons');
+      if (!container) return;
+      container.innerHTML = PORTFOLIO_PROJECTS.map((p, i) => `
+        <button onclick="selectSpotlightTarget(${i})" id="target-btn-${i}" class="target-btn px-2.5 py-1.5 text-left border ${i === 0 ? 'border-[#ccff00] bg-[#ccff00]/15 text-white' : 'border-white/15 text-neutral-400 hover:border-white/40'} transition">
+          0${i + 1}. ${p.title.split(' ')[0].toUpperCase()}
         </button>
       `).join('');
     }
 
-    /**
-     * =========================================================================
-     * 3. SKETCHFAB UID PARSER & HYBRID VIEWPORT SWITCHER
-     * =========================================================================
-     */
-    let activeViewerEngine = 'three'; // 'three' or 'sketchfab'
-    let currentTargetIndex = 0;
-    let customLoadedGLBScene = null;
-
-    // Extracts 32-char Sketchfab Model UID from full Sketchfab URLs, iframe code, or raw UIDs
-    function extractSketchfabUID(input) {
-      if (!input || typeof input !== 'string') return null;
-      const trimmed = input.trim();
-      if (!trimmed) return null;
-
-      // Direct 32-character hex ID
-      if (/^[a-f0-9]{32}$/i.test(trimmed)) {
-        return trimmed;
-      }
-      // URL pattern like sketchfab.com/3d-models/slug-name-32charhex
-      const slugMatch = trimmed.match(/([a-f0-9]{32})(?:[/?#]|$)/i);
-      if (slugMatch) {
-        return slugMatch[1];
-      }
-      // URL pattern like sketchfab.com/models/32charhex/embed
-      const embedMatch = trimmed.match(/models\/([a-f0-9]{32})/i);
-      if (embedMatch) {
-        return embedMatch[1];
-      }
-      return null;
-    }
-
-    function switchViewerEngine(engine) {
-      activeViewerEngine = engine;
-      const sketchfabContainer = document.getElementById('sketchfab-container');
-      const threeContainer = document.getElementById('spotlight-canvas');
-      const threeControls = document.getElementById('three-shader-controls');
-      const btnThree = document.getElementById('engine-btn-three');
-      const btnSketchfab = document.getElementById('engine-btn-sketchfab');
-
-      if (engine === 'sketchfab') {
-        sketchfabContainer.classList.remove('hidden');
-        threeContainer.classList.add('hidden');
-        threeControls.classList.add('hidden');
-        btnSketchfab.className = "px-3 py-1.5 bg-[#ccff00] text-black font-bold transition rounded-sm";
-        btnThree.className = "px-3 py-1.5 border border-white/15 text-neutral-300 hover:text-white transition rounded-sm";
-        document.getElementById('hud-source-badge').textContent = "SKETCHFAB_EMBED // LIVE";
-
-        const proj = PORTFOLIO_CONFIG.projects[currentTargetIndex];
-        const uid = extractSketchfabUID(proj.sketchfabInput);
-        loadSketchfabIframe(uid || 'b9c4308334514e0494b606798f888d5d');
-      } else {
-        sketchfabContainer.classList.add('hidden');
-        threeContainer.classList.remove('hidden');
-        threeControls.classList.remove('hidden');
-        btnThree.className = "px-3 py-1.5 bg-[#ccff00] text-black font-bold transition rounded-sm";
-        btnSketchfab.className = "px-3 py-1.5 border border-white/15 text-neutral-300 hover:text-white transition rounded-sm";
-        document.getElementById('hud-source-badge').textContent = customLoadedGLBScene ? "LOCAL_GLB // LOADED" : "TARGET ACQUIRED";
-      }
-    }
-
-    function loadSketchfabIframe(uid) {
-      const iframe = document.getElementById('sketchfab-iframe');
-      const embedUrl = `https://sketchfab.com/models/${uid}/embed?autospin=0.2&autostart=1&ui_theme=dark&dnt=1`;
-      if (iframe.src !== embedUrl) {
-        iframe.src = embedUrl;
-      }
-    }
-
-    function applyQuickSketchfabInput() {
-      const val = document.getElementById('quick-sketchfab-input').value.trim();
-      const uid = extractSketchfabUID(val);
-      if (!uid) {
-        showSystemToast("INVALID SKETCHFAB LINK", "Paste a valid Sketchfab 3D Model URL or 32-character ID.");
-        return;
-      }
-      PORTFOLIO_CONFIG.projects[currentTargetIndex].sketchfabInput = val;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(PORTFOLIO_CONFIG));
-      renderPortfolioUI();
-      selectSpotlightTarget(currentTargetIndex);
-      showSystemToast("SKETCHFAB 3D EMBEDDED", `Linked Sketchfab UID (${uid.slice(0, 8)}...) to Target 0${currentTargetIndex + 1}.`);
-    }
-
-    function loadDemoSketchfabProp() {
-      const demoUrl = "https://sketchfab.com/3d-models/sci-fi-crates-b9c4308334514e0494b606798f888d5d";
-      document.getElementById('quick-sketchfab-input').value = demoUrl;
-      applyQuickSketchfabInput();
-    }
-
-    /**
-     * =========================================================================
-     * 4. THREE.JS REAL-TIME VIEWPORT + DRAG-AND-DROP .GLB / .GLTF LOADER
-     * =========================================================================
-     */
-    let scene, camera, renderer, currentMeshGroup;
-    let renderMode = 'pbr';
-    let isDragging = false, prevX = 0, prevY = 0;
-
-    function initSpotlight3D() {
-      const container = document.getElementById('spotlight-canvas');
-      scene = new THREE.Scene();
-
-      camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-      camera.position.set(0, 1.4, 5.2);
-
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      container.appendChild(renderer.domElement);
-
-      // Grid Helper inside 3D HUD
-      const grid = new THREE.GridHelper(12, 24, 0xccff00, 0x222222);
-      grid.position.y = -1.4;
-      scene.add(grid);
-
-      // Studio Lights
-      const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
-      keyLight.position.set(4, 6, 5);
-      scene.add(keyLight);
-
-      const rimLight = new THREE.PointLight(0xccff00, 1.9, 15);
-      rimLight.position.set(-4, 2, -3);
-      scene.add(rimLight);
-
-      const fillLight = new THREE.AmbientLight(0x606075, 1.1);
-      scene.add(fillLight);
-
-      currentMeshGroup = new THREE.Group();
-      scene.add(currentMeshGroup);
-
-      // Pointer Orbit Controls
-      container.addEventListener('pointerdown', (e) => {
-        isDragging = true;
-        prevX = e.clientX;
-        prevY = e.clientY;
-      });
-      window.addEventListener('pointerup', () => isDragging = false);
-      window.addEventListener('pointermove', (e) => {
-        if (!isDragging) return;
-        const dx = (e.clientX - prevX) * 0.01;
-        const dy = (e.clientY - prevY) * 0.01;
-        currentMeshGroup.rotation.y += dx;
-        currentMeshGroup.rotation.x = Math.max(-0.8, Math.min(0.8, currentMeshGroup.rotation.x + dy));
-        prevX = e.clientX;
-        prevY = e.clientY;
-      });
-
-      container.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        camera.position.z = Math.max(2.2, Math.min(9, camera.position.z + e.deltaY * 0.003));
-      }, { passive: false });
-
-      window.addEventListener('resize', () => {
-        if (!container.clientWidth || !container.clientHeight) return;
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-      });
-
-      // Setup Drag and Drop for .GLB / .GLTF files on the Viewport
-      setupGLBDragAndDrop();
-
-      function animate() {
-        requestAnimationFrame(animate);
-        if (!isDragging && currentMeshGroup && activeViewerEngine === 'three') {
-          currentMeshGroup.rotation.y += 0.0045;
-        }
-        renderer.render(scene, camera);
-      }
-      animate();
-    }
-
-    function setupGLBDragAndDrop() {
-      const dropzone = document.getElementById('viewport-dropzone');
-      const overlay = document.getElementById('dropzone-overlay');
-
-      ['dragenter', 'dragover'].forEach(evt => {
-        dropzone.addEventListener(evt, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          overlay.classList.remove('hidden');
-          overlay.classList.add('flex');
-        });
-      });
-
-      ['dragleave', 'drop'].forEach(evt => {
-        dropzone.addEventListener(evt, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          overlay.classList.add('hidden');
-          overlay.classList.remove('flex');
-        });
-      });
-
-      dropzone.addEventListener('drop', (e) => {
-        const files = e.dataTransfer.files;
-        if (files && files.length > 0) {
-          loadGLBFileObject(files[0]);
-        }
-      });
-    }
-
-    function handleLocalGLBUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        loadGLBFileObject(file);
-      }
-    }
-
-    function loadGLBFileObject(file) {
-      if (!file.name.match(/\.(glb|gltf)$/i)) {
-        showSystemToast("UNSUPPORTED FILE", "Please select or drop a .glb or .gltf 3D file.");
-        return;
-      }
-
-      switchViewerEngine('three');
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const arrayBuffer = e.target.result;
-        const loader = new THREE.GLTFLoader();
-        loader.parse(arrayBuffer, '', function (gltf) {
-          customLoadedGLBScene = gltf.scene;
-
-          // Auto-center and normalize scale to fit viewport
-          const box = new THREE.Box3().setFromObject(customLoadedGLBScene);
-          const size = box.getSize(new THREE.Vector3());
-          const center = box.getCenter(new THREE.Vector3());
-          const maxAxis = Math.max(size.x, size.y, size.z) || 1;
-          const scaleFactor = 2.6 / maxAxis;
-
-          customLoadedGLBScene.position.sub(center);
-          customLoadedGLBScene.scale.setScalar(scaleFactor);
-
-          // Count real triangles & vertices
-          let totalTris = 0;
-          customLoadedGLBScene.traverse((child) => {
-            if (child.isMesh && child.geometry) {
-              child.userData.originalMaterial = child.material.clone();
-              const geom = child.geometry;
-              const tris = geom.index ? geom.index.count / 3 : geom.attributes.position.count / 3;
-              totalTris += Math.round(tris);
-            }
-          });
-
-          // Mount into scene
-          while (currentMeshGroup.children.length > 0) {
-            currentMeshGroup.remove(currentMeshGroup.children[0]);
-          }
-          currentMeshGroup.rotation.set(0, 0, 0);
-          currentMeshGroup.add(customLoadedGLBScene);
-          applyMaterialOverrideToLoadedGLB();
-
-          // Update Telemetry HUD with real GLB stats
-          document.getElementById('hud-source-badge').textContent = "LOCAL_GLB // VERIFIED";
-          document.getElementById('hud-target-name').textContent = file.name.replace(/\.(glb|gltf)$/i, '').toUpperCase();
-          document.getElementById('hud-target-cat').textContent = "CUSTOM .GLB ASSET // REAL-TIME";
-          document.getElementById('hud-target-tris').textContent = totalTris.toLocaleString() + " TRIS";
-          document.getElementById('hud-target-uv').textContent = "EMBEDDED GLTF PBR";
-
-          showSystemToast("3D PROP LOADED", `${file.name} (${totalTris.toLocaleString()} Tris) ready for inspection.`);
-        }, function (err) {
-          console.error(err);
-          showSystemToast("GLB PARSE ERROR", "Could not parse the .glb file.");
-        });
-      };
-      reader.readAsArrayBuffer(file);
-    }
-
-    function applyMaterialOverrideToLoadedGLB() {
-      if (!customLoadedGLBScene) return;
-      customLoadedGLBScene.traverse((child) => {
-        if (child.isMesh) {
-          if (renderMode === 'wire') {
-            child.material = new THREE.MeshBasicMaterial({ color: 0xccff00, wireframe: true });
-          } else if (renderMode === 'clay') {
-            child.material = new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.6, metalness: 0.08 });
-          } else if (child.userData.originalMaterial) {
-            child.material = child.userData.originalMaterial;
-          }
-        }
-      });
-    }
-
-    function getActiveMaterial(colorHex, metalness = 0.75, roughness = 0.25) {
-      if (renderMode === 'wire') {
-        return new THREE.MeshBasicMaterial({ color: 0xccff00, wireframe: true });
-      }
-      if (renderMode === 'clay') {
-        return new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.65, metalness: 0.05 });
-      }
-      return new THREE.MeshStandardMaterial({ color: colorHex, metalness, roughness });
-    }
-
-    function buildTargetGeometry(index) {
-      customLoadedGLBScene = null;
-      while (currentMeshGroup.children.length > 0) {
-        currentMeshGroup.remove(currentMeshGroup.children[0]);
-      }
-
-      if (index === 0) {
-        // Glaive Polearm + Blade
-        const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.07, 3.2, 16), getActiveMaterial(0x2a2a2e, 0.8, 0.3));
-        const guard = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.06, 12, 24), getActiveMaterial(0xccff00, 0.9, 0.2));
-        guard.position.y = 0.7;
-        guard.rotation.x = Math.PI / 2;
-        const blade = new THREE.Mesh(new THREE.ConeGeometry(0.32, 1.35, 4), getActiveMaterial(0xd4d4d8, 0.95, 0.15));
-        blade.position.y = 1.45;
-        blade.scale.set(0.35, 1, 1);
-        currentMeshGroup.add(shaft, guard, blade);
-        currentMeshGroup.rotation.z = -0.45;
-      } else if (index === 1) {
-        // Mars Dome & Reactor Core
-        currentMeshGroup.rotation.z = 0;
-        const dome = new THREE.Mesh(new THREE.IcosahedronGeometry(1.15, 1), getActiveMaterial(0x3a3f47, 0.7, 0.3));
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.05, 16, 48), getActiveMaterial(0xccff00, 0.8, 0.2));
-        ring.rotation.x = Math.PI / 2.3;
-        currentMeshGroup.add(dome, ring);
-      } else if (index === 2) {
-        // 4x4m Exhibition Booth Truss
-        currentMeshGroup.rotation.z = 0;
-        const base = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.15, 2.4), getActiveMaterial(0x1f1f23, 0.5, 0.4));
-        base.position.y = -0.9;
-        const wall = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.5, 0.15), getActiveMaterial(0x3f3f46, 0.6, 0.3));
-        wall.position.set(0, -0.1, -1.0);
-        const canopy = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.12, 2.3), getActiveMaterial(0xccff00, 0.8, 0.2));
-        canopy.position.y = 0.75;
-        currentMeshGroup.add(base, wall, canopy);
-      } else {
-        // Lumi Floating Robot
-        currentMeshGroup.rotation.z = 0;
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.9, 32, 24), getActiveMaterial(0xf4f4f6, 0.3, 0.2));
-        const visor = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.35, 0.5), getActiveMaterial(0xccff00, 0.9, 0.1));
-        visor.position.set(0, 0.1, 0.65);
-        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.04, 12, 32), getActiveMaterial(0xccff00, 0.9, 0.1));
-        halo.position.y = 1.15;
-        halo.rotation.x = Math.PI / 2;
-        currentMeshGroup.add(head, visor, halo);
-      }
-    }
-
     function selectSpotlightTarget(index) {
       currentTargetIndex = index;
-      const proj = PORTFOLIO_CONFIG.projects[index];
+      const p = PORTFOLIO_PROJECTS[index] || PORTFOLIO_PROJECTS[0];
 
-      // Update Right Telemetry Panel
-      document.getElementById('hud-target-name').textContent = proj.title.toUpperCase();
-      document.getElementById('hud-target-cat').textContent = `${proj.badgeLeft} // TARGET_0${index + 1}`;
-      document.getElementById('hud-target-desc').textContent = proj.description;
-      document.getElementById('hud-target-tris').textContent = proj.tris;
-      document.getElementById('hud-target-uv').textContent = proj.uv;
-      document.getElementById('hud-coords').textContent = proj.coords;
-      document.getElementById('hud-artstation-link').href = proj.artstationUrl || "https://www.artstation.com/tonoy8663";
-      document.getElementById('quick-sketchfab-input').value = proj.sketchfabInput || "";
+      document.getElementById('hud-target-name').textContent = p.title;
+      document.getElementById('hud-target-cat').textContent = `${p.category} // PROP_${index + 1}`;
+      document.getElementById('hud-target-desc').textContent = p.desc;
+      document.getElementById('hud-target-tris').textContent = p.tris;
+      document.getElementById('hud-artstation-link').href = p.artstationUrl;
 
-      // Highlight Active Target Button
+      const iframe = document.getElementById('sketchfab-iframe');
+      if (iframe) {
+        iframe.src = `https://sketchfab.com/models/${p.sketchfabId}/embed?autostart=1&ui_watermark=0&ui_infos=0`;
+      }
+
       document.querySelectorAll('.target-btn').forEach((btn, i) => {
-        if (i === index) {
-          btn.className = "target-btn px-2.5 py-1.5 text-left border border-[#ccff00] bg-[#ccff00]/15 text-white transition truncate rounded-sm";
-        } else {
-          btn.className = "target-btn px-2.5 py-1.5 text-left border border-white/15 hover:border-white/40 text-neutral-400 transition truncate rounded-sm";
-        }
+        btn.className = i === index
+          ? "target-btn px-2.5 py-1.5 text-left border border-[#ccff00] bg-[#ccff00]/15 text-white transition"
+          : "target-btn px-2.5 py-1.5 text-left border border-white/15 hover:border-white/40 text-neutral-400 transition";
       });
-
-      // Automatically switch to Sketchfab Embed if a Sketchfab URL/ID is configured for this target
-      const uid = extractSketchfabUID(proj.sketchfabInput);
-      if (uid) {
-        switchViewerEngine('sketchfab');
-        loadSketchfabIframe(uid);
-      } else {
-        switchViewerEngine('three');
-        buildTargetGeometry(index);
-      }
     }
 
-    function setRenderMode(mode) {
-      renderMode = mode;
-      ['pbr', 'wire', 'clay'].forEach(m => {
-        const btn = document.getElementById('mode-' + m);
-        btn.className = (m === mode)
-          ? "px-3 py-1 bg-[#ccff00] text-black font-bold rounded-sm"
-          : "px-3 py-1 border border-white/15 text-neutral-300 hover:text-white rounded-sm";
-      });
-
-      if (customLoadedGLBScene) {
-        applyMaterialOverrideToLoadedGLB();
-      } else {
-        buildTargetGeometry(currentTargetIndex);
-      }
+    function jumpToSpotlight(index) {
+      selectSpotlightTarget(index);
+      window.location.hash = '#spotlight';
     }
 
-    /**
-     * =========================================================================
-     * 5. LIVE ASSET & EMBED CUSTOMIZER DRAWER LOGIC
-     * =========================================================================
-     */
-    function toggleAssetDrawer(open) {
-      const drawer = document.getElementById('asset-drawer');
-      const backdrop = document.getElementById('asset-drawer-backdrop');
-      if (open) {
-        populateDrawerInputs();
-        backdrop.classList.remove('hidden');
-        drawer.classList.remove('translate-x-full');
-      } else {
-        backdrop.classList.add('hidden');
-        drawer.classList.add('translate-x-full');
-      }
-    }
-
-    function populateDrawerInputs() {
-      const container = document.getElementById('drawer-form-container');
-      const projectCardsHtml = PORTFOLIO_CONFIG.projects.map((p, idx) => `
-        <div class="hud-box bg-[#0c0c0e] p-5 space-y-4 rounded-sm">
-          <div class="flex items-center justify-between border-b border-white/10 pb-2">
-            <span class="font-mono-tech text-xs text-[#ccff00] font-bold">SLOT 0${idx + 1} // ${p.shortButtonLabel}</span>
-            <span class="font-mono-tech text-[11px] text-neutral-400">${p.badgeLeft}</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block font-mono-tech text-[11px] uppercase text-neutral-400 mb-1">Project Title</label>
-              <input type="text" id="cfg-title-${idx}" value="${p.title}" class="w-full bg-black border border-white/20 px-3 py-2 text-xs text-white focus:border-[#ccff00] focus:outline-none rounded-sm" />
-            </div>
-            <div>
-              <label class="block font-mono-tech text-[11px] uppercase text-neutral-400 mb-1">Polycount &amp; Spec Tag</label>
-              <input type="text" id="cfg-badge-${idx}" value="${p.badgeRight}" class="w-full bg-black border border-white/20 px-3 py-2 text-xs text-white focus:border-[#ccff00] focus:outline-none rounded-sm" />
-            </div>
-          </div>
-
-          <div>
-            <label class="block font-mono-tech text-[11px] uppercase text-[#ccff00] mb-1">ArtStation Thumbnail Image URL (cdna.artstation.com/...)</label>
-            <input type="url" id="cfg-thumb-${idx}" value="${p.thumbnailUrl}" placeholder="https://cdna.artstation.com/p/assets/images/..." class="w-full bg-black border border-white/20 px-3 py-2 text-xs text-white font-mono-tech focus:border-[#ccff00] focus:outline-none rounded-sm" />
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block font-mono-tech text-[11px] uppercase text-neutral-400 mb-1">ArtStation Project Link</label>
-              <input type="url" id="cfg-arturl-${idx}" value="${p.artstationUrl}" placeholder="https://www.artstation.com/artwork/..." class="w-full bg-black border border-white/20 px-3 py-2 text-xs text-white font-mono-tech focus:border-[#ccff00] focus:outline-none rounded-sm" />
-            </div>
-            <div>
-              <label class="block font-mono-tech text-[11px] uppercase text-[#ccff00] mb-1">Sketchfab 3D Model URL or UID (Optional)</label>
-              <input type="text" id="cfg-sketchfab-${idx}" value="${p.sketchfabInput}" placeholder="https://sketchfab.com/3d-models/..." class="w-full bg-black border border-white/20 px-3 py-2 text-xs text-white font-mono-tech focus:border-[#ccff00] focus:outline-none rounded-sm" />
-            </div>
-          </div>
-
-          <div>
-            <label class="block font-mono-tech text-[11px] uppercase text-neutral-400 mb-1">Technical Breakdown Description</label>
-            <textarea id="cfg-desc-${idx}" rows="2" class="w-full bg-black border border-white/20 px-3 py-2 text-xs text-white focus:border-[#ccff00] focus:outline-none rounded-sm">${p.description}</textarea>
-          </div>
-        </div>
-      `).join('');
-
-      container.innerHTML = `
-        <div class="hud-box bg-[#0c0c0e] p-5 space-y-3 rounded-sm">
-          <label class="block font-mono-tech text-xs uppercase text-[#ccff00] font-bold">Operator Portrait Image URL (TGN_PORTRAIT_001.RAW)</label>
-          <input type="url" id="cfg-portrait-url" value="${PORTFOLIO_CONFIG.artistPortraitUrl}" class="w-full bg-black border border-white/20 px-3 py-2 text-xs text-white font-mono-tech focus:border-[#ccff00] focus:outline-none rounded-sm" />
-        </div>
-        ${projectCardsHtml}
-      `;
-    }
-
-    function saveCustomConfig() {
-      PORTFOLIO_CONFIG.artistPortraitUrl = document.getElementById('cfg-portrait-url').value.trim() || DEFAULT_PORTFOLIO_CONFIG.artistPortraitUrl;
-
-      PORTFOLIO_CONFIG.projects.forEach((p, idx) => {
-        p.title = document.getElementById(`cfg-title-${idx}`).value.trim() || p.title;
-        p.badgeRight = document.getElementById(`cfg-badge-${idx}`).value.trim() || p.badgeRight;
-        p.thumbnailUrl = document.getElementById(`cfg-thumb-${idx}`).value.trim() || p.thumbnailUrl;
-        p.artstationUrl = document.getElementById(`cfg-arturl-${idx}`).value.trim() || p.artstationUrl;
-        p.sketchfabInput = document.getElementById(`cfg-sketchfab-${idx}`).value.trim();
-        p.description = document.getElementById(`cfg-desc-${idx}`).value.trim() || p.description;
-      });
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(PORTFOLIO_CONFIG));
-      renderPortfolioUI();
-      selectSpotlightTarget(currentTargetIndex);
-      toggleAssetDrawer(false);
-      showSystemToast("PORTFOLIO UPDATED", "Your ArtStation thumbnails & Sketchfab embeds are now live.");
-    }
-
-    function resetConfigToDefaults() {
-      localStorage.removeItem(STORAGE_KEY);
-      PORTFOLIO_CONFIG = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO_CONFIG));
-      populateDrawerInputs();
-      renderPortfolioUI();
-      selectSpotlightTarget(0);
-      showSystemToast("DEFAULTS RESTORED", "Reset portfolio configuration to original factory defaults.");
-    }
-
-    function exportConfigCode() {
-      const codeString = `const DEFAULT_PORTFOLIO_CONFIG = ${JSON.stringify(PORTFOLIO_CONFIG, null, 2)};`;
-      const temp = document.createElement('textarea');
-      temp.value = codeString;
-      document.body.appendChild(temp);
-      temp.select();
-      document.execCommand('copy');
-      document.body.removeChild(temp);
-      showSystemToast("CONFIG COPIED TO CLIPBOARD", "Paste into DEFAULT_PORTFOLIO_CONFIG in index.html to make permanent.");
-    }
-
-    // Horizontal Drag-to-Scroll for Expertise Carousel
     const slider = document.getElementById('expertise-slider');
     let isDown = false, startX, scrollLeft;
-    slider.addEventListener('mousedown', (e) => {
-      isDown = true;
-      slider.classList.add('active');
-      startX = e.pageX - slider.offsetLeft;
-      scrollLeft = slider.scrollLeft;
-    });
-    slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
-    slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
-    slider.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - slider.offsetLeft;
-      const walk = (x - startX) * 1.8;
-      slider.scrollLeft = scrollLeft - walk;
-    });
+    if (slider) {
+      slider.addEventListener('mousedown', (e) => { isDown = true; slider.classList.add('active'); startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; });
+      slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
+      slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
+      slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        slider.scrollLeft = scrollLeft - (x - startX) * 1.8;
+      });
+    }
 
     function handleContactSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       btn.textContent = "TRANSMISSION RECEIVED // THANK YOU ✓";
       btn.classList.replace('bg-[#ccff00]', 'bg-white');
-      showSystemToast("TRANSMISSION SENT", "Your project brief has been logged.");
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      renderPortfolioUI();
-      initSpotlight3D();
-      selectSpotlightTarget(0);
+      renderProjects();
+      initSpotlight();
     });
   </script>
 </body>
