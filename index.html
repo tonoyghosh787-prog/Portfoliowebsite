@@ -7,55 +7,188 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #050505;
-      --card: #0c0c0e;
+      --bg: #030305;
+      --card: rgba(12, 13, 18, 0.78);
       --accent: #ccff00;
-      --border: rgba(255, 255, 255, 0.12);
+      --accent-glow: rgba(204, 255, 0, 0.35);
+      --border: rgba(255, 255, 255, 0.09);
     }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       background-color: var(--bg);
       color: #f4f4f6;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
     }
+
+    /* Hide default cursor on desktop devices where custom cursor is active */
+    @media (pointer: fine) {
+      body, a, button, input, textarea, .drag-slider {
+        cursor: none !important;
+      }
+    }
+
     .font-display { font-family: 'Syne', sans-serif; }
     .font-mono-tech { font-family: 'JetBrains Mono', monospace; }
 
+    /* Architectural Cyber Grid + Subtle Vignette */
     .bg-grid {
-      background-size: 48px 48px;
+      background-size: 56px 56px;
       background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
     }
 
+    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #050505; }
-    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: #030305; }
+    ::-webkit-scrollbar-thumb { background: #22222a; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #ccff00; }
 
-    .drag-slider {
-      cursor: grab;
-      user-select: none;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    /* Fascinating Custom Cyber-Reticle Cursor */
+    #cursor-dot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 8px; height: 8px;
+      background: #ccff00;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px #ccff00;
+      transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
     }
-    .drag-slider::-webkit-scrollbar { display: none; }
-    .drag-slider.active { cursor: grabbing; }
 
+    #cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      width: 42px; height: 42px;
+      border: 1px solid rgba(204, 255, 0, 0.55);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                  height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                  border-color 0.25s ease,
+                  background-color 0.25s ease,
+                  border-radius 0.25s ease;
+    }
+
+    #cursor-ring::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border: 1px dashed rgba(204, 255, 0, 0.3);
+      border-radius: inherit;
+      animation: spinSlow 10s linear infinite;
+    }
+
+    #cursor-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #000;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all 0.2s ease;
+      pointer-events: none;
+    }
+
+    body.cursor-hover #cursor-dot {
+      width: 0px;
+      height: 0px;
+    }
+
+    body.cursor-hover #cursor-ring {
+      width: 68px;
+      height: 68px;
+      background-color: rgba(204, 255, 0, 0.92);
+      border-color: #ccff00;
+      box-shadow: 0 0 25px rgba(204, 255, 0, 0.45);
+    }
+
+    body.cursor-hover #cursor-label {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @media (pointer: coarse) {
+      #cursor-dot, #cursor-ring { display: none !important; }
+    }
+
+    @keyframes spinSlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Ambient Floating Background Orbs */
+    @keyframes floatOrb {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      50% { transform: translate(-40px, 30px) scale(1.08); }
+    }
+    .animate-orb {
+      animation: floatOrb 12s ease-in-out infinite;
+    }
+
+    /* Infinite Marquee Animation */
+    @keyframes marqueeSlide {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marqueeSlide 28s linear infinite;
+    }
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    /* Smooth Scroll Reveal Animations */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-up.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* HUD Box & Interactive Spotlight Card Glow */
     .hud-box {
       position: relative;
-      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      transition: border-color 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+    }
+    .hud-box:hover {
+      border-color: rgba(204, 255, 0, 0.45);
+      box-shadow: 0 20px 50px -20px rgba(204, 255, 0, 0.14);
     }
     .hud-box::before, .hud-box::after {
       content: '';
       position: absolute;
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-color: #ccff00;
       pointer-events: none;
+      transition: width 0.3s ease, height 0.3s ease;
+      z-index: 20;
     }
     .hud-box::before {
       top: -1px; left: -1px;
@@ -67,42 +200,104 @@
       border-bottom: 2px solid #ccff00;
       border-right: 2px solid #ccff00;
     }
+    .hud-box:hover::before, .hud-box:hover::after {
+      width: 18px;
+      height: 18px;
+    }
 
+    /* Interactive 3D Card Tilt & Radial Glare */
+    .tilt-card {
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .card-glare {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(204, 255, 0, 0.09), transparent 45%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .tilt-card:hover .card-glare {
+      opacity: 1;
+    }
+
+    .drag-slider {
+      user-select: none;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .drag-slider::-webkit-scrollbar { display: none; }
+
+    /* Kinetic Outlined Hero Text */
     .stroke-text {
-      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.28);
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
       color: transparent;
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .stroke-text:hover {
-      -webkit-text-stroke: 1px #ccff00;
+      -webkit-text-stroke: 1.5px #ccff00;
       color: #ccff00;
+      text-shadow: 0 0 35px rgba(204, 255, 0, 0.35);
+    }
+
+    /* Button Sweep Effect */
+    .btn-cyber {
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .btn-cyber::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: -1;
+    }
+    .btn-cyber:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
     }
   </style>
 </head>
 <body class="bg-grid antialiased selection:bg-[#ccff00] selection:text-black">
 
+  <!-- FASCINATING CUSTOM CYBER CURSOR -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"><span id="cursor-label">VIEW</span></div>
+
+  <!-- TOP READING PROGRESS BAR -->
+  <div class="fixed top-0 left-0 w-full h-[3px] z-[60] bg-white/5">
+    <div id="scroll-progress" class="h-full bg-[#ccff00] w-0 shadow-[0_0_12px_#ccff00] transition-all duration-75"></div>
+  </div>
+
   <!-- TOP FLOATING NAVBAR -->
-  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-black/80 border-b border-white/10">
+  <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-black/75 border-b border-white/10 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="#home" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 bg-[#ccff00] text-black font-display font-extrabold text-lg flex items-center justify-center tracking-tighter group-hover:rotate-12 transition-transform">
+      <a href="#home" data-cursor="HOME" class="flex items-center gap-3.5 group">
+        <div class="w-10 h-10 bg-[#ccff00] text-black font-display font-extrabold text-xl flex items-center justify-center tracking-tighter group-hover:rotate-12 group-hover:scale-110 transition-all duration-300 shadow-[0_0_20px_rgba(204,255,0,0.4)]">
           T
         </div>
         <div class="hidden sm:block">
-          <p class="font-mono-tech text-xs tracking-widest text-white">TONOY GHOSE NILOY</p>
-          <p class="font-mono-tech text-[10px] text-neutral-400">SYS.VER // 2026.4 [SHOWREEL READY]</p>
+          <p class="font-mono-tech text-xs font-bold tracking-widest text-white group-hover:text-[#ccff00] transition">TONOY GHOSE NILOY</p>
+          <p class="font-mono-tech text-[10px] text-neutral-400">SYS.VER // 2026.5 [PRO EDITION]</p>
         </div>
       </a>
 
-      <nav class="hidden md:flex items-center gap-10 font-mono-tech text-xs uppercase tracking-[0.2em]">
-        <a href="#home" class="text-neutral-300 hover:text-[#ccff00] transition">Home</a>
-        <a href="#showreel" class="text-neutral-300 hover:text-[#ccff00] transition">Showreel</a>
-        <a href="#work" class="text-neutral-300 hover:text-[#ccff00] transition">Work</a>
-        <a href="#spotlight" class="text-neutral-300 hover:text-[#ccff00] transition">TGN_Spotlight</a>
-        <a href="#profile" class="text-neutral-300 hover:text-[#ccff00] transition">Profile</a>
-        <a href="#contact" class="text-neutral-300 hover:text-[#ccff00] transition">Contact</a>
+      <nav class="hidden md:flex items-center gap-9 font-mono-tech text-xs uppercase tracking-[0.2em]">
+        <a href="#home" data-cursor="GO" class="text-neutral-300 hover:text-[#ccff00] transition relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#ccff00] hover:after:w-full after:transition-all">Home</a>
+        <a href="#showreel" data-cursor="PLAY" class="text-neutral-300 hover:text-[#ccff00] transition relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#ccff00] hover:after:w-full after:transition-all">Showreel</a>
+        <a href="#work" data-cursor="WORK" class="text-neutral-300 hover:text-[#ccff00] transition relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#ccff00] hover:after:w-full after:transition-all">Work</a>
+        <a href="#spotlight" data-cursor="3D" class="text-neutral-300 hover:text-[#ccff00] transition relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#ccff00] hover:after:w-full after:transition-all">TGN_Spotlight</a>
+        <a href="#profile" data-cursor="BIO" class="text-neutral-300 hover:text-[#ccff00] transition relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#ccff00] hover:after:w-full after:transition-all">Profile</a>
+        <a href="#contact" data-cursor="PING" class="text-neutral-300 hover:text-[#ccff00] transition relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#ccff00] hover:after:w-full after:transition-all">Contact</a>
       </nav>
 
-      <a href="https://www.artstation.com/tonoy8663" target="_blank" rel="noopener" class="px-4 py-2 border border-[#ccff00]/60 text-[#ccff00] font-mono-tech text-xs uppercase tracking-widest hover:bg-[#ccff00] hover:text-black transition">
+      <a href="https://www.artstation.com/tonoy8663" target="_blank" rel="noopener" data-cursor="OPEN" class="px-4 py-2.5 border border-[#ccff00]/60 text-[#ccff00] font-mono-tech text-xs uppercase tracking-widest hover:bg-[#ccff00] hover:text-black hover:shadow-[0_0_20px_rgba(204,255,0,0.4)] transition-all duration-300">
         ArtStation ↗
       </a>
     </div>
@@ -110,54 +305,90 @@
 
   <!-- HERO SECTION -->
   <section id="home" class="relative min-h-screen flex flex-col justify-between pt-28 pb-10 px-6 overflow-hidden border-b border-white/10">
-    <div class="pointer-events-none absolute -top-40 right-1/4 w-[550px] h-[550px] rounded-full bg-[#ccff00]/10 blur-[150px]"></div>
+    <!-- Animated Ambient Glow Orbs -->
+    <div class="pointer-events-none absolute -top-36 right-1/4 w-[580px] h-[580px] rounded-full bg-[#ccff00]/10 blur-[160px] animate-orb"></div>
+    <div class="pointer-events-none absolute bottom-10 left-10 w-[400px] h-[400px] rounded-full bg-emerald-500/5 blur-[140px] animate-orb" style="animation-delay: -5s;"></div>
 
-    <div class="max-w-7xl mx-auto w-full flex flex-wrap items-center justify-between gap-4 font-mono-tech text-xs text-neutral-400 border-b border-white/10 pb-4">
-      <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-[#ccff00] animate-ping"></span>
-        <span class="text-white">STATUS:</span> AVAILABLE FOR GAME STUDIO COMMISSIONS
+    <!-- Top Telemetry Bar -->
+    <div class="max-w-7xl mx-auto w-full flex flex-wrap items-center justify-between gap-4 font-mono-tech text-xs text-neutral-400 border-b border-white/10 pb-4 reveal-up">
+      <div class="flex items-center gap-2.5">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ccff00] opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#ccff00]"></span>
+        </span>
+        <span class="text-white font-semibold">STATUS:</span> AVAILABLE FOR GAME STUDIO COMMISSIONS
       </div>
       <div class="flex items-center gap-6">
-        <span>PIPELINE: <strong class="text-white">PBR / UE5 / BLENDER</strong></span>
+        <span>PIPELINE: <strong class="text-[#ccff00]">PBR / UE5 / BLENDER</strong></span>
         <span class="hidden sm:inline">LOC: <strong class="text-white">DHAKA, BD</strong></span>
       </div>
     </div>
 
+    <!-- Hero Main Title & Intro -->
     <div class="max-w-7xl mx-auto w-full my-auto py-16">
-      <p class="font-mono-tech text-xs md:text-sm uppercase tracking-[0.35em] text-[#ccff00] mb-4">
-        // 3D GENERALIST &amp; HARD-SURFACE PROP ARTIST
-      </p>
-      <h1 class="font-display font-extrabold uppercase leading-[0.88] tracking-tight text-5xl sm:text-7xl md:text-8xl lg:text-[9.2rem]">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 border border-[#ccff00]/30 bg-[#ccff00]/5 font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-6 reveal-up">
+        <span>// 3D GENERALIST &amp; HARD-SURFACE PROP ARTIST</span>
+      </div>
+
+      <h1 class="font-display font-extrabold uppercase leading-[0.86] tracking-tight text-5xl sm:text-7xl md:text-8xl lg:text-[9.2rem] reveal-up" style="transition-delay: 100ms;">
         TONOY<br/>
-        <span class="stroke-text transition-colors duration-500">GHOSE NILOY</span>
+        <span class="stroke-text">GHOSE NILOY</span>
       </h1>
 
-      <div class="mt-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
-        <p class="md:col-span-6 text-neutral-300 text-base md:text-lg leading-relaxed max-w-xl">
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-end reveal-up" style="transition-delay: 200ms;">
+        <p class="md:col-span-6 text-neutral-300 text-base md:text-lg leading-relaxed max-w-xl border-l-2 border-[#ccff00] pl-5">
           Crafting production-ready low-poly game props, hero weapons, and modular environments with clean topology, crisp normal bakes, and physically accurate PBR textures.
         </p>
         <div class="md:col-span-6 flex flex-wrap md:justify-end gap-4">
-          <a href="#showreel" class="px-7 py-4 bg-[#ccff00] text-black font-mono-tech text-xs font-bold uppercase tracking-widest hover:bg-white transition">
+          <a href="#showreel" data-cursor="PLAY" class="btn-cyber px-8 py-4 bg-[#ccff00] text-black font-mono-tech text-xs font-bold uppercase tracking-widest shadow-[0_0_30px_rgba(204,255,0,0.3)] transition">
             Watch Showreel ▶
           </a>
-          <a href="#work" class="px-7 py-4 border border-white/20 text-white font-mono-tech text-xs uppercase tracking-widest hover:border-[#ccff00] hover:text-[#ccff00] transition">
+          <a href="#work" data-cursor="EXPLORE" class="px-8 py-4 border border-white/20 bg-white/[0.02] backdrop-blur-sm text-white font-mono-tech text-xs uppercase tracking-widest hover:border-[#ccff00] hover:text-[#ccff00] hover:bg-[#ccff00]/5 transition duration-300">
             Explore Selected Work
           </a>
         </div>
       </div>
     </div>
 
+    <!-- Bottom Telemetry Footer -->
     <div class="max-w-7xl mx-auto w-full flex items-center justify-between font-mono-tech text-xs text-neutral-400 pt-4 border-t border-white/10">
       <span>SCROLL TO INITIALIZE</span>
-      <span class="animate-bounce text-[#ccff00]">↓</span>
-      <span>[SECURE PORTFOLIO]</span>
+      <span class="animate-bounce text-[#ccff00] text-base">↓</span>
+      <span>[SECURE STUDIO PORTFOLIO]</span>
     </div>
   </section>
 
+  <!-- INFINITE SLIDING PIPELINE MARQUEE BANNER -->
+  <div class="border-b border-white/10 bg-[#07070b] py-4 overflow-hidden select-none">
+    <div class="marquee-track font-mono-tech text-xs uppercase tracking-[0.25em] text-neutral-400 flex items-center">
+      <div class="flex items-center gap-12 px-6">
+        <span><strong class="text-[#ccff00]">✦</strong> HARD-SURFACE WEAPONRY</span>
+        <span><strong class="text-[#ccff00]">✦</strong> LOW-POLY GAME ASSETS</span>
+        <span><strong class="text-[#ccff00]">✦</strong> HIGH-TO-LOW CAGE BAKING</span>
+        <span><strong class="text-[#ccff00]">✦</strong> 4K PBR TEXTURING</span>
+        <span><strong class="text-[#ccff00]">✦</strong> UNREAL ENGINE 5 READY</span>
+        <span><strong class="text-[#ccff00]">✦</strong> BLENDER &bull; ZBRUSH &bull; SUBSTANCE PAINTER</span>
+        <span><strong class="text-[#ccff00]">✦</strong> MODULAR LEVEL ENVIRONMENTS</span>
+        <span><strong class="text-[#ccff00]">✦</strong> COMMERCIAL 3D ARCHVIZ</span>
+      </div>
+      <!-- Duplicate for seamless infinite loop -->
+      <div class="flex items-center gap-12 px-6">
+        <span><strong class="text-[#ccff00]">✦</strong> HARD-SURFACE WEAPONRY</span>
+        <span><strong class="text-[#ccff00]">✦</strong> LOW-POLY GAME ASSETS</span>
+        <span><strong class="text-[#ccff00]">✦</strong> HIGH-TO-LOW CAGE BAKING</span>
+        <span><strong class="text-[#ccff00]">✦</strong> 4K PBR TEXTURING</span>
+        <span><strong class="text-[#ccff00]">✦</strong> UNREAL ENGINE 5 READY</span>
+        <span><strong class="text-[#ccff00]">✦</strong> BLENDER &bull; ZBRUSH &bull; SUBSTANCE PAINTER</span>
+        <span><strong class="text-[#ccff00]">✦</strong> MODULAR LEVEL ENVIRONMENTS</span>
+        <span><strong class="text-[#ccff00]">✦</strong> COMMERCIAL 3D ARCHVIZ</span>
+      </div>
+    </div>
+  </div>
+
   <!-- YOUTUBE SHOWREEL SECTION -->
-  <section id="showreel" class="py-24 px-6 border-b border-white/10 bg-black/40">
+  <section id="showreel" class="py-28 px-6 border-b border-white/10 bg-black/40 relative">
     <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 reveal-up">
         <div>
           <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-2">// CINEMATIC_SHOWREEL</p>
           <h2 class="font-display text-4xl sm:text-6xl font-extrabold uppercase tracking-tight">
@@ -170,12 +401,12 @@
       </div>
 
       <!-- Responsive YouTube HUD Container -->
-      <div class="hud-box bg-[#0c0c0e] p-3 sm:p-5">
+      <div class="hud-box p-3 sm:p-5 reveal-up">
         <div class="flex items-center justify-between font-mono-tech text-xs text-neutral-400 mb-4 px-2">
-          <span class="text-[#ccff00]">STREAM SOURCE: YOUTUBE 1080P/4K 60FPS</span>
-          <span>AUDIO: ENABLED</span>
+          <span class="text-[#ccff00] flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#ccff00] animate-ping"></span> STREAM SOURCE: YOUTUBE 1080P/4K 60FPS</span>
+          <span>AUDIO: STEREO ENABLED</span>
         </div>
-        <div class="relative w-full aspect-video bg-neutral-900 overflow-hidden">
+        <div class="relative w-full aspect-video bg-neutral-950 overflow-hidden border border-white/10">
           <!-- REPLACE "dQw4w9WgXcQ" WITH YOUR ACTUAL YOUTUBE VIDEO ID -->
           <iframe 
             src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&rel=0&modestbranding=1" 
@@ -190,9 +421,9 @@
   </section>
 
   <!-- SELECTED WORK (UNLIMITED DYNAMIC PORTFOLIO GRID) -->
-  <section id="work" class="py-24 px-6 border-b border-white/10">
+  <section id="work" class="py-28 px-6 border-b border-white/10">
     <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 reveal-up">
         <div>
           <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-2">// ARCHIVE_01</p>
           <h2 class="font-display text-4xl sm:text-6xl font-extrabold uppercase tracking-tight">
@@ -200,19 +431,23 @@
           </h2>
         </div>
         <div class="flex flex-wrap items-center gap-3 font-mono-tech text-xs">
-          <input type="text" id="work-search" oninput="filterProjects()" placeholder="Search assets..." class="bg-black border border-white/20 px-3 py-2 text-white focus:outline-none focus:border-[#ccff00]" />
-          <button onclick="setLayoutDensity(2)" id="density-2" class="px-3 py-2 border border-white/20 bg-[#ccff00] text-black font-bold">2-COL</button>
-          <button onclick="setLayoutDensity(3)" id="density-3" class="px-3 py-2 border border-white/20 text-neutral-400 hover:text-white">3-COL</button>
+          <div class="relative">
+            <input type="text" id="work-search" oninput="filterProjects()" placeholder="Search assets..." class="bg-black/90 border border-white/20 pl-4 pr-8 py-2.5 text-white focus:outline-none focus:border-[#ccff00] transition w-56" />
+            <span class="absolute right-3 top-2.5 text-neutral-500">⌕</span>
+          </div>
+          <button onclick="setLayoutDensity(2)" id="density-2" data-cursor="2-COL" class="px-3.5 py-2.5 border border-white/20 bg-[#ccff00] text-black font-bold transition">2-COL</button>
+          <button onclick="setLayoutDensity(3)" id="density-3" data-cursor="3-COL" class="px-3.5 py-2.5 border border-white/20 text-neutral-400 hover:text-white transition">3-COL</button>
         </div>
       </div>
 
-      <div id="category-filters" class="flex flex-wrap gap-2 mb-12 font-mono-tech text-xs">
-        <button onclick="filterCategory('ALL')" class="cat-btn px-4 py-2 border border-[#ccff00] bg-[#ccff00]/15 text-white">ALL [10]</button>
-        <button onclick="filterCategory('WEAPONS')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">WEAPONS &amp; PROPS</button>
-        <button onclick="filterCategory('ENVIRONMENTS')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">ENVIRONMENTS &amp; VEHICLES</button>
-        <button onclick="filterCategory('ARCHVIZ')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">ARCHVIZ &amp; BOOTH</button>
-        <button onclick="filterCategory('PACKAGING')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">PACKAGING &amp; PRODUCT</button>
-        <button onclick="filterCategory('FILM')" class="cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white">SHORT FILM &amp; MECHA</button>
+      <!-- Category Filter Pills -->
+      <div id="category-filters" class="flex flex-wrap gap-2.5 mb-14 font-mono-tech text-xs reveal-up">
+        <button onclick="filterCategory('ALL')" data-cursor="FILTER" class="cat-btn px-4 py-2.5 border border-[#ccff00] bg-[#ccff00]/15 text-white transition">ALL [10]</button>
+        <button onclick="filterCategory('WEAPONS')" data-cursor="FILTER" class="cat-btn px-4 py-2.5 border border-white/15 bg-white/[0.02] text-neutral-400 hover:text-white hover:border-white/40 transition">WEAPONS &amp; PROPS</button>
+        <button onclick="filterCategory('ENVIRONMENTS')" data-cursor="FILTER" class="cat-btn px-4 py-2.5 border border-white/15 bg-white/[0.02] text-neutral-400 hover:text-white hover:border-white/40 transition">ENVIRONMENTS &amp; VEHICLES</button>
+        <button onclick="filterCategory('ARCHVIZ')" data-cursor="FILTER" class="cat-btn px-4 py-2.5 border border-white/15 bg-white/[0.02] text-neutral-400 hover:text-white hover:border-white/40 transition">ARCHVIZ &amp; BOOTH</button>
+        <button onclick="filterCategory('PACKAGING')" data-cursor="FILTER" class="cat-btn px-4 py-2.5 border border-white/15 bg-white/[0.02] text-neutral-400 hover:text-white hover:border-white/40 transition">PACKAGING &amp; PRODUCT</button>
+        <button onclick="filterCategory('FILM')" data-cursor="FILTER" class="cat-btn px-4 py-2.5 border border-white/15 bg-white/[0.02] text-neutral-400 hover:text-white hover:border-white/40 transition">SHORT FILM &amp; MECHA</button>
       </div>
 
       <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
@@ -220,9 +455,9 @@
   </section>
 
   <!-- TGN_SPOTLIGHT (SKETCHFAB EMBED VIEWPORT) -->
-  <section id="spotlight" class="py-24 px-6 border-b border-white/10 relative">
+  <section id="spotlight" class="py-28 px-6 border-b border-white/10 relative">
     <div class="max-w-7xl mx-auto">
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-8 reveal-up">
         <div>
           <div class="flex items-center gap-3">
             <span class="px-2.5 py-1 bg-[#ccff00] text-black font-mono-tech text-xs font-bold">TGN_SPOTLIGHT</span>
@@ -239,13 +474,13 @@
         </div>
       </div>
 
-      <div class="hud-box bg-[#08080a] relative h-[580px] w-full overflow-hidden">
+      <div class="hud-box bg-[#08080a] relative h-[580px] w-full overflow-hidden reveal-up">
         <div id="sketchfab-container" class="w-full h-full absolute inset-0">
           <iframe id="sketchfab-iframe" title="3D Model Viewer" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share class="w-full h-full"></iframe>
         </div>
 
         <div class="absolute top-5 left-5 z-10 flex flex-col gap-3 max-w-xs pointer-events-auto">
-          <div class="bg-black/90 backdrop-blur-md border border-white/15 p-3 font-mono-tech text-[11px] text-neutral-300">
+          <div class="bg-black/90 backdrop-blur-md border border-white/15 p-3.5 font-mono-tech text-[11px] text-neutral-300 shadow-2xl">
             <p class="text-[#ccff00] font-bold mb-1">SELECT ASSET FOR 3D VIEW</p>
             <div id="spotlight-target-buttons" class="flex flex-col gap-1.5 mt-2 max-h-52 overflow-y-auto pr-1"></div>
           </div>
@@ -257,7 +492,7 @@
           <span>⚡ Live PBR Sketchfab Embed</span>
         </div>
 
-        <div class="absolute top-5 right-5 bottom-5 w-72 bg-black/90 backdrop-blur-md border border-white/15 p-5 z-10 hidden lg:flex flex-col justify-between font-mono-tech pointer-events-auto">
+        <div class="absolute top-5 right-5 bottom-5 w-72 bg-black/90 backdrop-blur-md border border-white/15 p-5 z-10 hidden lg:flex flex-col justify-between font-mono-tech pointer-events-auto shadow-2xl">
           <div>
             <div class="flex items-center justify-between border-b border-white/15 pb-3 mb-4">
               <span class="text-[11px] text-[#ccff00] tracking-widest">SKETCHFAB STREAM</span>
@@ -275,7 +510,7 @@
           </div>
 
           <div class="border-t border-white/15 pt-3 text-[11px] text-neutral-400 flex items-center justify-between">
-            <a id="hud-artstation-link" href="https://www.artstation.com/tonoy8663" target="_blank" class="text-[#ccff00] underline hover:text-white">VIEW FULL POST ↗</a>
+            <a id="hud-artstation-link" href="https://www.artstation.com/tonoy8663" target="_blank" data-cursor="OPEN" class="text-[#ccff00] underline hover:text-white">VIEW FULL POST ↗</a>
             <span class="text-[#ccff00]">READY ✓</span>
           </div>
         </div>
@@ -284,17 +519,17 @@
   </section>
 
   <!-- PROFILE & BIO SECTION -->
-  <section id="profile" class="py-24 px-6 border-b border-white/10">
+  <section id="profile" class="py-28 px-6 border-b border-white/10">
     <div class="max-w-7xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-5">
-          <div class="hud-box bg-[#0c0c0e] p-4">
+        <div class="lg:col-span-5 reveal-up">
+          <div class="hud-box p-4 group">
             <div class="flex items-center justify-between font-mono-tech text-xs text-neutral-400 mb-3">
               <span>TGN_PORTRAIT_001.RAW</span>
-              <span class="text-[#ccff00]">REC ●</span>
+              <span class="text-[#ccff00] animate-pulse">REC ●</span>
             </div>
             <div class="relative aspect-[4/5] bg-neutral-900 overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80" alt="Tonoy Ghose Niloy Digital Portrait" class="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition duration-500" />
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80" alt="Tonoy Ghose Niloy Digital Portrait" class="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition duration-700" />
               <div class="absolute bottom-4 left-4 right-4 bg-black/85 backdrop-blur-md border border-white/15 p-4 font-mono-tech text-xs">
                 <p class="text-[#ccff00] font-bold">TONOY GHOSE NILOY</p>
                 <p class="text-neutral-300 mt-0.5">B.Sc. in Multimedia &amp; Creative Technology</p>
@@ -304,7 +539,7 @@
           </div>
         </div>
 
-        <div class="lg:col-span-7">
+        <div class="lg:col-span-7 reveal-up" style="transition-delay: 120ms;">
           <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-3">// OPERATOR_PROFILE</p>
           <h2 class="font-display text-4xl sm:text-6xl font-extrabold uppercase leading-none mb-6">
             Hi, This Is <span class="text-[#ccff00]">Tonoy.</span>
@@ -318,47 +553,49 @@
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 pt-8 border-t border-white/15 font-mono-tech">
-            <div><span class="text-[11px] text-neutral-500 block">ROLE</span><strong class="text-sm text-white">3D Prop Artist</strong></div>
-            <div><span class="text-[11px] text-neutral-500 block">FOCUS</span><strong class="text-sm text-white">Hard-Surface &amp; PBR</strong></div>
-            <div><span class="text-[11px] text-neutral-500 block">CORE STACK</span><strong class="text-sm text-[#ccff00]">Blender / Painter / UE5</strong></div>
-            <div><span class="text-[11px] text-neutral-500 block">PORTFOLIO</span><a href="https://www.artstation.com/tonoy8663" target="_blank" class="text-sm text-white underline hover:text-[#ccff00]">@tonoy8663</a></div>
+            <div class="p-3 bg-white/[0.02] border border-white/10"><span class="text-[10px] text-neutral-500 block">ROLE</span><strong class="text-sm text-white">3D Prop Artist</strong></div>
+            <div class="p-3 bg-white/[0.02] border border-white/10"><span class="text-[10px] text-neutral-500 block">FOCUS</span><strong class="text-sm text-white">Hard-Surface &amp; PBR</strong></div>
+            <div class="p-3 bg-white/[0.02] border border-white/10"><span class="text-[10px] text-neutral-500 block">CORE STACK</span><strong class="text-sm text-[#ccff00]">Blender / Painter / UE5</strong></div>
+            <div class="p-3 bg-white/[0.02] border border-white/10"><span class="text-[10px] text-neutral-500 block">PORTFOLIO</span><a href="https://www.artstation.com/tonoy8663" target="_blank" data-cursor="ART" class="text-sm text-white underline hover:text-[#ccff00]">@tonoy8663</a></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- EXPERTISE CAROUSEL -->
-  <section class="py-24 px-6 border-b border-white/10 overflow-hidden">
+  <!-- EXPERTISE CAROUSEL (SMOOTH SLIDING DRAG + BUTTONS) -->
+  <section class="py-28 px-6 border-b border-white/10 overflow-hidden">
     <div class="max-w-7xl mx-auto">
-      <div class="flex items-center justify-between mb-12">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-12 reveal-up">
         <div>
           <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-2">// CAPABILITY_MATRIX</p>
           <h2 class="font-display text-4xl sm:text-5xl font-extrabold uppercase">Expertise</h2>
         </div>
-        <div class="flex items-center gap-3 font-mono-tech text-xs text-[#ccff00] border border-[#ccff00]/40 px-4 py-2">
-          <span>← DRAG TO EXPLORE →</span>
+        <div class="flex items-center gap-3 font-mono-tech text-xs">
+          <button onclick="slideExpertise(-1)" data-cursor="PREV" class="w-10 h-10 border border-white/20 hover:border-[#ccff00] hover:text-[#ccff00] flex items-center justify-center transition">←</button>
+          <span class="text-[#ccff00] border border-[#ccff00]/40 px-4 py-2 hidden sm:inline">DRAG OR CLICK TO SLIDE</span>
+          <button onclick="slideExpertise(1)" data-cursor="NEXT" class="w-10 h-10 border border-white/20 hover:border-[#ccff00] hover:text-[#ccff00] flex items-center justify-center transition">→</button>
         </div>
       </div>
 
-      <div id="expertise-slider" class="drag-slider flex gap-6 overflow-x-auto pb-4">
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">01</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">Hard-Surface<br/>Modeling</h3><p class="text-neutral-400 text-sm">Weapons, sci-fi mechanisms, and industrial props with crisp bevels and zero shading artifacts.</p></div></div>
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">02</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">Low-Poly Game<br/>Optimization</h3><p class="text-neutral-400 text-sm">Strict triangle budgets, clean silhouette retention, and LOD chain creation for Unreal Engine 5.</p></div></div>
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">03</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">High-to-Low<br/>Normal Baking</h3><p class="text-neutral-400 text-sm">Marmoset Toolbag &amp; Substance cage bakes for flawless curvature, AO, and tangent-space normals.</p></div></div>
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">04</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">PBR Material<br/>Authoring</h3><p class="text-neutral-400 text-sm">Substance 3D Painter &amp; Designer workflows with realistic micro-surface wear and storytelling.</p></div></div>
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">05</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">UV Unwrapping &amp;<br/>Texel Density</h3><p class="text-neutral-400 text-sm">Maximized UV packing efficiency, straightened shells, and hidden seams for crisp 4K bakes.</p></div></div>
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">06</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">ZBrush Sculpting<br/>&amp; Retopology</h3><p class="text-neutral-400 text-sm">Organic surface detailing, ornamental weapon hilts, damage sculpting, and quad-draw retopo.</p></div></div>
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">07</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">Exhibition &amp;<br/>ArchViz Booths</h3><p class="text-neutral-400 text-sm">Commercial 3D stall layouts, lighting schemes, and V-Ray product visualization renders.</p></div></div>
-        <div class="hud-box bg-[#0c0c0e] min-w-[290px] sm:min-w-[320px] p-8 flex flex-col justify-between"><span class="font-mono-tech text-3xl font-bold text-[#ccff00]">08</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2">3D Packaging<br/>&amp; Dielines</h3><p class="text-neutral-400 text-sm">Illustrator vector dielines translated into photorealistic 3D studio product mockups.</p></div></div>
+      <div id="expertise-slider" data-cursor="DRAG" class="drag-slider flex gap-6 overflow-x-auto pb-6 scroll-smooth reveal-up">
+        <div class="hud-box min-w-[290px] sm:min-w-[330px] p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-300"><span class="font-mono-tech text-3xl font-bold text-[#ccff00] group-hover:scale-110 origin-left transition">01</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2 group-hover:text-[#ccff00] transition">Hard-Surface<br/>Modeling</h3><p class="text-neutral-400 text-sm">Weapons, sci-fi mechanisms, and industrial props with crisp bevels and zero shading artifacts.</p></div></div>
+        <div class="hud-box min-w-[290px] sm:min-w-[330px] p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-300"><span class="font-mono-tech text-3xl font-bold text-[#ccff00] group-hover:scale-110 origin-left transition">02</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2 group-hover:text-[#ccff00] transition">Low-Poly Game<br/>Optimization</h3><p class="text-neutral-400 text-sm">Strict triangle budgets, clean silhouette retention, and LOD chain creation for Unreal Engine 5.</p></div></div>
+        <div class="hud-box min-w-[290px] sm:min-w-[330px] p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-300"><span class="font-mono-tech text-3xl font-bold text-[#ccff00] group-hover:scale-110 origin-left transition">03</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2 group-hover:text-[#ccff00] transition">High-to-Low<br/>Normal Baking</h3><p class="text-neutral-400 text-sm">Marmoset Toolbag &amp; Substance cage bakes for flawless curvature, AO, and tangent-space normals.</p></div></div>
+        <div class="hud-box min-w-[290px] sm:min-w-[330px] p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-300"><span class="font-mono-tech text-3xl font-bold text-[#ccff00] group-hover:scale-110 origin-left transition">04</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2 group-hover:text-[#ccff00] transition">PBR Material<br/>Authoring</h3><p class="text-neutral-400 text-sm">Substance 3D Painter &amp; Designer workflows with realistic micro-surface wear and storytelling.</p></div></div>
+        <div class="hud-box min-w-[290px] sm:min-w-[330px] p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-300"><span class="font-mono-tech text-3xl font-bold text-[#ccff00] group-hover:scale-110 origin-left transition">05</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2 group-hover:text-[#ccff00] transition">UV Unwrapping &amp;<br/>Texel Density</h3><p class="text-neutral-400 text-sm">Maximized UV packing efficiency, straightened shells, and hidden seams for crisp 4K bakes.</p></div></div>
+        <div class="hud-box min-w-[290px] sm:min-w-[330px] p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-300"><span class="font-mono-tech text-3xl font-bold text-[#ccff00] group-hover:scale-110 origin-left transition">06</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2 group-hover:text-[#ccff00] transition">ZBrush Sculpting<br/>&amp; Retopology</h3><p class="text-neutral-400 text-sm">Organic surface detailing, ornamental weapon hilts, damage sculpting, and quad-draw retopo.</p></div></div>
+        <div class="hud-box min-w-[290px] sm:min-w-[330px] p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-300"><span class="font-mono-tech text-3xl font-bold text-[#ccff00] group-hover:scale-110 origin-left transition">07</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2 group-hover:text-[#ccff00] transition">Exhibition &amp;<br/>ArchViz Booths</h3><p class="text-neutral-400 text-sm">Commercial 3D stall layouts, lighting schemes, and V-Ray product visualization renders.</p></div></div>
+        <div class="hud-box min-w-[290px] sm:min-w-[330px] p-8 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-300"><span class="font-mono-tech text-3xl font-bold text-[#ccff00] group-hover:scale-110 origin-left transition">08</span><div class="mt-12"><h3 class="font-display text-2xl font-bold uppercase mb-2 group-hover:text-[#ccff00] transition">3D Packaging<br/>&amp; Dielines</h3><p class="text-neutral-400 text-sm">Illustrator vector dielines translated into photorealistic 3D studio product mockups.</p></div></div>
       </div>
     </div>
   </section>
 
   <!-- CONTACT SECTION -->
-  <section id="contact" class="py-24 px-6">
+  <section id="contact" class="py-28 px-6">
     <div class="max-w-7xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div class="lg:col-span-6">
+        <div class="lg:col-span-6 reveal-up">
           <p class="font-mono-tech text-xs uppercase tracking-[0.3em] text-[#ccff00] mb-3">// START A PROJECT</p>
           <h2 class="font-display text-5xl sm:text-7xl font-extrabold uppercase tracking-tight leading-none mb-6">
             Say <span class="text-[#ccff00]">Hello.</span>
@@ -369,43 +606,43 @@
 
           <div class="space-y-3 font-mono-tech text-xs text-neutral-400">
             <p>LOCATION: <strong class="text-white">DHAKA, BANGLADESH</strong></p>
-            <p>ARTSTATION: <a href="https://www.artstation.com/tonoy8663" target="_blank" class="text-[#ccff00] underline">artstation.com/tonoy8663</a></p>
+            <p>ARTSTATION: <a href="https://www.artstation.com/tonoy8663" target="_blank" data-cursor="OPEN" class="text-[#ccff00] underline">artstation.com/tonoy8663</a></p>
             <p>RESPONSE TIME: <strong class="text-white">&lt; 24 HOURS</strong></p>
           </div>
         </div>
 
-        <div class="lg:col-span-6">
-          <form onsubmit="handleContactSubmit(event)" class="hud-box bg-[#0c0c0e] p-8 space-y-6">
+        <div class="lg:col-span-6 reveal-up" style="transition-delay: 120ms;">
+          <form onsubmit="handleContactSubmit(event)" class="hud-box p-8 space-y-6">
             <div>
               <label class="block font-mono-tech text-xs uppercase text-neutral-400 mb-2">Name / Studio</label>
-              <input type="text" required placeholder="Enter your name or studio" class="w-full bg-black border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ccff00]" />
+              <input type="text" required placeholder="Enter your name or studio" class="w-full bg-black/90 border border-white/15 px-4 py-3.5 text-sm text-white focus:outline-none focus:border-[#ccff00] transition" />
             </div>
             <div>
               <label class="block font-mono-tech text-xs uppercase text-neutral-400 mb-2">Email Address</label>
-              <input type="email" required placeholder="studio@example.com" class="w-full bg-black border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ccff00]" />
+              <input type="email" required placeholder="studio@example.com" class="w-full bg-black/90 border border-white/15 px-4 py-3.5 text-sm text-white focus:outline-none focus:border-[#ccff00] transition" />
             </div>
             <div>
               <label class="block font-mono-tech text-xs uppercase text-neutral-400 mb-2">Project Brief / Asset Specs</label>
-              <textarea rows="4" required placeholder="Tell me about your prop list, target engine (UE5/Unity), polycount budget, and deadline..." class="w-full bg-black border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ccff00]"></textarea>
+              <textarea rows="4" required placeholder="Tell me about your prop list, target engine (UE5/Unity), polycount budget, and deadline..." class="w-full bg-black/90 border border-white/15 px-4 py-3.5 text-sm text-white focus:outline-none focus:border-[#ccff00] transition"></textarea>
             </div>
-            <button type="submit" id="submit-btn" class="w-full py-4 bg-[#ccff00] text-black font-mono-tech text-xs font-bold uppercase tracking-widest hover:bg-white transition">
+            <button type="submit" id="submit-btn" data-cursor="SEND" class="btn-cyber w-full py-4 bg-[#ccff00] text-black font-mono-tech text-xs font-bold uppercase tracking-widest transition">
               SEND MESSAGE →
             </button>
           </form>
         </div>
       </div>
 
-      <div class="mt-20 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono-tech text-xs text-neutral-500">
+      <div class="mt-24 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono-tech text-xs text-neutral-500">
         <p>© 2026 TONOY GHOSE NILOY. ALL RIGHTS RESERVED. [SECURE DEPLOYMENT]</p>
         <div class="flex items-center gap-6">
-          <a href="https://www.artstation.com/tonoy8663" target="_blank" class="hover:text-[#ccff00] transition">ARTSTATION</a>
-          <a href="#home" class="hover:text-[#ccff00] transition">BACK TO TOP ↑</a>
+          <a href="https://www.artstation.com/tonoy8663" target="_blank" data-cursor="ART" class="hover:text-[#ccff00] transition">ARTSTATION</a>
+          <a href="#home" data-cursor="TOP" class="hover:text-[#ccff00] transition">BACK TO TOP ↑</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- JAVASCRIPT: PORTFOLIO DATASET WITH SKETCHFAB & YOUTUBE SHOWREEL -->
+  <!-- JAVASCRIPT: PORTFOLIO DATASET, ANIMATIONS, 3D TILT & CUSTOM CURSOR -->
   <script>
     const PORTFOLIO_PROJECTS = [
       {
@@ -562,18 +799,19 @@
       }
 
       grid.innerHTML = filtered.map((p, index) => `
-        <article class="hud-box bg-[#0c0c0e] group overflow-hidden flex flex-col justify-between">
+        <article data-cursor="VIEW" class="hud-box tilt-card group overflow-hidden flex flex-col justify-between reveal-up active">
+          <div class="card-glare"></div>
           <div class="relative h-72 overflow-hidden bg-neutral-900">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover opacity-75 group-hover:scale-105 group-hover:opacity-100 transition duration-700" />
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0c0c0e] via-transparent to-transparent"></div>
-            <span class="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-white/15 font-mono-tech text-[11px] text-[#ccff00]">
-              0${index + 1} // ${p.sub.toUpperCase()}
+            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover opacity-80 group-hover:scale-110 group-hover:opacity-100 transition duration-700 ease-out" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#060608] via-transparent to-transparent"></div>
+            <span class="absolute top-4 left-4 px-3 py-1 bg-black/85 backdrop-blur-md border border-white/15 font-mono-tech text-[11px] text-[#ccff00]">
+              ${String(index + 1).padStart(2, '0')} // ${p.sub.toUpperCase()}
             </span>
-            <span class="absolute top-4 right-4 px-3 py-1 bg-black/80 font-mono-tech text-[11px] text-neutral-300">
+            <span class="absolute top-4 right-4 px-3 py-1 bg-black/85 backdrop-blur-md font-mono-tech text-[11px] text-neutral-300">
               ${p.tris} • ${p.pbr}
             </span>
           </div>
-          <div class="p-8">
+          <div class="p-8 relative z-20">
             <div class="flex items-center justify-between mb-2">
               <span class="font-mono-tech text-xs uppercase tracking-widest text-neutral-400">${p.sub}</span>
               <span class="font-mono-tech text-xs text-[#ccff00]">${p.tag}</span>
@@ -585,23 +823,25 @@
               ${p.desc}
             </p>
             <div class="flex flex-wrap items-center justify-between border-t border-white/10 pt-4 font-mono-tech text-xs gap-3">
-              <a href="#spotlight" onclick="jumpToSpotlight(${p.id - 1})" class="text-[#ccff00] hover:underline">INSPECT IN 3D →</a>
-              <a href="${p.artstationUrl}" target="_blank" rel="noopener" class="px-3 py-1.5 border border-white/20 text-neutral-300 hover:border-[#ccff00] hover:text-[#ccff00] transition">
+              <a href="#spotlight" data-cursor="3D" onclick="jumpToSpotlight(${p.id - 1})" class="text-[#ccff00] hover:underline flex items-center gap-1">INSPECT IN 3D <span>→</span></a>
+              <a href="${p.artstationUrl}" target="_blank" rel="noopener" data-cursor="ART" class="px-3.5 py-1.5 border border-white/20 text-neutral-300 hover:border-[#ccff00] hover:bg-[#ccff00] hover:text-black transition">
                 View on ArtStation ↗
               </a>
             </div>
           </div>
         </article>
       `).join('');
+
+      attachCardTiltAndCursor();
     }
 
     function filterCategory(cat) {
       currentCategory = cat;
       document.querySelectorAll('.cat-btn').forEach(btn => {
         if (btn.textContent.includes(cat) || (cat === 'ALL' && btn.textContent.includes('ALL'))) {
-          btn.className = "cat-btn px-4 py-2 border border-[#ccff00] bg-[#ccff00]/15 text-white";
+          btn.className = "cat-btn px-4 py-2.5 border border-[#ccff00] bg-[#ccff00]/15 text-white transition";
         } else {
-          btn.className = "cat-btn px-4 py-2 border border-white/20 text-neutral-400 hover:text-white";
+          btn.className = "cat-btn px-4 py-2.5 border border-white/15 bg-white/[0.02] text-neutral-400 hover:text-white hover:border-white/40 transition";
         }
       });
       renderProjects();
@@ -611,8 +851,8 @@
 
     function setLayoutDensity(cols) {
       currentDensity = cols;
-      document.getElementById('density-2').className = cols === 2 ? "px-3 py-2 border border-white/20 bg-[#ccff00] text-black font-bold" : "px-3 py-2 border border-white/20 text-neutral-400 hover:text-white";
-      document.getElementById('density-3').className = cols === 3 ? "px-3 py-2 border border-white/20 bg-[#ccff00] text-black font-bold" : "px-3 py-2 border border-white/20 text-neutral-400 hover:text-white";
+      document.getElementById('density-2').className = cols === 2 ? "px-3.5 py-2.5 border border-white/20 bg-[#ccff00] text-black font-bold transition" : "px-3.5 py-2.5 border border-white/20 text-neutral-400 hover:text-white transition";
+      document.getElementById('density-3').className = cols === 3 ? "px-3.5 py-2.5 border border-white/20 bg-[#ccff00] text-black font-bold transition" : "px-3.5 py-2.5 border border-white/20 text-neutral-400 hover:text-white transition";
       renderProjects();
     }
 
@@ -627,10 +867,11 @@
       const container = document.getElementById('spotlight-target-buttons');
       if (!container) return;
       container.innerHTML = PORTFOLIO_PROJECTS.map((p, i) => `
-        <button onclick="selectSpotlightTarget(${i})" id="target-btn-${i}" class="target-btn px-2.5 py-1.5 text-left border ${i === 0 ? 'border-[#ccff00] bg-[#ccff00]/15 text-white' : 'border-white/15 text-neutral-400 hover:border-white/40'} transition">
-          0${i + 1}. ${p.title.split(' ')[0].toUpperCase()}
+        <button onclick="selectSpotlightTarget(${i})" data-cursor="LOAD" id="target-btn-${i}" class="target-btn px-2.5 py-1.5 text-left border ${i === 0 ? 'border-[#ccff00] bg-[#ccff00]/15 text-white' : 'border-white/15 text-neutral-400 hover:border-white/40'} transition">
+          ${String(i + 1).padStart(2, '0')}. ${p.title.split(' ')[0].toUpperCase()}
         </button>
       `).join('');
+      attachCardTiltAndCursor();
     }
 
     function selectSpotlightTarget(index) {
@@ -660,6 +901,7 @@
       window.location.hash = '#spotlight';
     }
 
+    // Expertise Carousel Drag & Button Sliding
     const slider = document.getElementById('expertise-slider');
     let isDown = false, startX, scrollLeft;
     if (slider) {
@@ -674,6 +916,11 @@
       });
     }
 
+    function slideExpertise(dir) {
+      if (!slider) return;
+      slider.scrollBy({ left: dir * 360, behavior: 'smooth' });
+    }
+
     function handleContactSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
@@ -681,9 +928,89 @@
       btn.classList.replace('bg-[#ccff00]', 'bg-white');
     }
 
+    // FASCINATING CUSTOM CURSOR PHYSICS & HOVER STATES
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorRing = document.getElementById('cursor-ring');
+    const cursorLabel = document.getElementById('cursor-label');
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let ringX = mouseX, ringY = mouseY;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (cursorDot) {
+        cursorDot.style.left = `${mouseX}px`;
+        cursorDot.style.top = `${mouseY}px`;
+      }
+    });
+
+    function animateCursor() {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      if (cursorRing) {
+        cursorRing.style.left = `${ringX}px`;
+        cursorRing.style.top = `${ringY}px`;
+      }
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // 3D Card Tilt Effect & Dynamic Cursor Binding
+    function attachCardTiltAndCursor() {
+      document.querySelectorAll('[data-cursor], a, button').forEach(el => {
+        el.onmouseenter = () => {
+          document.body.classList.add('cursor-hover');
+          if (cursorLabel) cursorLabel.textContent = el.getAttribute('data-cursor') || 'OPEN';
+        };
+        el.onmouseleave = () => {
+          document.body.classList.remove('cursor-hover');
+        };
+      });
+
+      document.querySelectorAll('.tilt-card').forEach(card => {
+        card.onmousemove = (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+          const rotateY = ((x / rect.width) - 0.5) * 6;
+          const rotateX = ((y / rect.height) - 0.5) * -6;
+          card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+        };
+        card.onmouseleave = () => {
+          card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+          document.body.classList.remove('cursor-hover');
+        };
+      });
+    }
+
+    // Scroll Progress Bar & IntersectionObserver Reveal Animations
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      const bar = document.getElementById('scroll-progress');
+      if (bar) bar.style.width = `${pct}%`;
+    });
+
+    function initScrollReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       renderProjects();
       initSpotlight();
+      initScrollReveal();
+      attachCardTiltAndCursor();
     });
   </script>
 </body>
